@@ -171,7 +171,7 @@
                 "name": "rocketchat"
             },
             "spec": {
-                "dockerImageRepository": "registry.connect.redhat.com/rocketchat/rocketchat",
+                "dockerImageRepository": "docker.io/rocket.chat",
                 "tags": [
                     {
                         "name": "latest",
@@ -228,8 +228,8 @@
                             ],
                             "from": {
                                 "kind": "ImageStreamTag",
-                                "namespace": "${NAMESPACE}",
-                                "name": "rocketchat:latest"
+                                "namespace": "openshift",
+                                "name": "rocket.chat:latest"
                             }
                         }
                     }
@@ -262,7 +262,7 @@
                         "containers": [
                             {
                                 "name": "rocketchat",
-                                "image": "registry.connect.redhat.com/rocketchat/rocketchat:latest",
+                                "image": "rocketchat/rocket.chat:latest",
                                 "ports": [
                                     {
                                         "containerPort": 3000,

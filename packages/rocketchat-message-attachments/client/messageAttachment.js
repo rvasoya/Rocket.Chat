@@ -4,6 +4,12 @@ const colors = {
 	warning: '#FCB316',
 	danger: '#D30230'
 };
+const getimageId = function(url){
+	if (url && url.indexOf('/file-upload/') === 0) {
+		let id = url.replace('/file-upload/','').split('/')
+		return id[0];
+	}
+};
 const fixCordova = function(url) {
 	if (url && url.indexOf('data:image') === 0) {
 		return url;
@@ -27,6 +33,7 @@ const fixCordova = function(url) {
 };
 /*globals renderMessageBody*/
 Template.messageAttachment.helpers({
+	getimageId,
 	fixCordova,
 	parsedText() {
 		return renderMessageBody({

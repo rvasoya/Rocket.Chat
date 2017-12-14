@@ -1,6 +1,4 @@
-/* globals chatMessages, fileUpload , fireGlobalEvent , cordova , readMessage , RoomRoles, popover , device */
-import { RocketChatTabBar } from 'meteor/rocketchat:lib';
-
+/* globals RocketChatTabBar , chatMessages, fileUpload , fireGlobalEvent , cordova , readMessage , RoomRoles, popover , device */
 import _ from 'underscore';
 import moment from 'moment';
 import mime from 'mime-type/with-db';
@@ -23,7 +21,7 @@ const openProfileTab = (e, instance, username) => {
 		return;
 	}
 
-	if (RocketChat.roomTypes.roomTypes[roomData.t].enableMembersListProfile()) {
+	if (['c', 'p', 'd'].includes(roomData.t)) {
 		instance.setUserDetail(username);
 	}
 
@@ -278,10 +276,6 @@ Template.room.helpers({
 		}
 
 		return roomIcon;
-	},
-
-	tokenAccessChannel() {
-		return Template.instance().hasTokenpass.get();
 	},
 
 	userStatus() {
@@ -772,16 +766,6 @@ Template.room.onCreated(function() {
 	this.clearUserDetail = () => {
 		this.userDetail.set(null);
 	};
-
-	this.hasTokenpass = new ReactiveVar(false);
-
-	if (RocketChat.settings.get('API_Tokenpass_URL') !== '') {
-		Meteor.call('getChannelTokenpass', this.data._id, (error, result) => {
-			if (!error) {
-				this.hasTokenpass.set(!!(result && result.tokens && result.tokens.length > 0));
-			}
-		});
-	}
 
 	Meteor.call('getRoomRoles', this.data._id, function(error, results) {
 		if (error) {

@@ -77,8 +77,7 @@ const getFromServer = (cb, type) => {
 				resultsFromServer.push({
 					_id: results.rooms[i]._id,
 					t: results.rooms[i].t,
-					name: results.rooms[i].name,
-					lastMessage: results.rooms[i].lastMessage
+					name: results.rooms[i].name
 				});
 			}
 		}

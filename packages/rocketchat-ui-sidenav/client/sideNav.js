@@ -14,25 +14,11 @@ Template.sideNav.helpers({
 	},
 
 	roomType() {
-		return RocketChat.roomTypes.getTypes().map((roomType) => {
-			return {
-				template: roomType.customTemplate || 'roomList',
-				data: {
-					header: roomType.header,
-					identifier: roomType.identifier,
-					isCombined: roomType.isCombined,
-					label: roomType.label
-				}
-			};
-		});
+		return RocketChat.roomTypes.getTypes();
 	},
 
 	loggedInUser() {
 		return !!Meteor.userId();
-	},
-
-	isLastMessageActive() {
-		return RocketChat.settings.get('Store_Last_Message');
 	}
 });
 

@@ -1,4 +1,7 @@
-export class RocketChatTabBar {
+/* globals RocketChatTabBar */
+/* exported RocketChatTabBar */
+
+RocketChatTabBar = class RocketChatTabBar {
 	constructor() {
 		this.template = new ReactiveVar();
 		this.group = new ReactiveVar();
@@ -66,4 +69,4 @@ export class RocketChatTabBar {
 
 		this.template.set();
 	}
-}
+};

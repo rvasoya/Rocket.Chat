@@ -1,0 +1,19 @@
+<template name="annotationTemplate">
+	<div class="list-view flex-tab__header">
+		<div class="title">
+			<h2>Annotation</h2>
+		</div>
+			<h2>No new annotation</h2>
+	</div>
+	<div class="flex-tab__result js-list">
+		<ul class="list clearfix">
+				{{> messageAttachment}}
+		</ul>
+
+		<!-- {{#if hasMore}}
+			<div class="load-more">
+				{{> loading}}
+			</div>
+		{{/if}} -->
+	</div>
+</template>

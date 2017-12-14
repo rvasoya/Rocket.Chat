@@ -1,6 +1,5 @@
+/* globals RocketChatTabBar */
 import s from 'underscore.string';
-
-import { RocketChatTabBar } from 'meteor/rocketchat:lib';
 
 Template.adminSounds.helpers({
 	isReady() {

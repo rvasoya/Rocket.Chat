@@ -1,59 +1,36 @@
-import { Progress } from './ImporterProgress';
-import { ProgressStep } from '../../lib/ImporterProgressStep';
-import { Selection } from './ImporterSelection';
-import { Imports } from '../models/Imports';
-import { ImporterInfo } from '../../lib/ImporterInfo';
-import { RawImports } from '../models/RawImports';
-import { ImporterWebsocket } from './ImporterWebsocket';
-
+/* globals Importer */
+// Base class for all Importers.
+//
+// @example How to subclass an importer
+// 	class ExampleImporter extends RocketChat.importTool._baseImporter
+//		constructor: ->
+//			super('Name of Importer', 'Description of the importer, use i18n string.', new RegExp('application\/.*?zip'))
+//		prepare: (uploadedFileData, uploadedFileContentType, uploadedFileName) =>
+//			super
+//		startImport: (selectedUsersAndChannels) =>
+//			super
+//		getProgress: =>
+//			#return the progress report, tbd what is expected
+// @version 1.0.0
 import http from 'http';
 import https from 'https';
 import AdmZip from 'adm-zip';
 import getFileType from 'file-type';
 
-/**
- * Base class for all of the importers.
- */
-export class Base {
-	/**
-	 * The max BSON object size we can store in MongoDB is 16777216 bytes
-	 * but for some reason the mongo instanace which comes with Meteor
-	 * errors out for anything close to that size. So, we are rounding it
-	 * down to 8000000 bytes.
-	 *
-	 * @param {any} item The item to calculate the BSON size of.
-	 * @returns {number} The size of the item passed in.
-	 * @static
-	 */
-	static getBSONSize(item) {
+Importer.Base = class Base {
+	static getBSONSize(object) {
+		// The max BSON object size we can store in MongoDB is 16777216 bytes
+		// but for some reason the mongo instanace which comes with meteor
+		// errors out for anything close to that size. So, we are rounding it
+		// down to 8000000 bytes.
 		const { BSON } = require('bson').native();
 		const bson = new BSON();
-		return bson.calculateObjectSize(item);
+		return bson.calculateObjectSize(object);
 	}
 
-	/**
-	 * The max BSON object size we can store in MongoDB is 16777216 bytes
-	 * but for some reason the mongo instanace which comes with Meteor
-	 * errors out for anything close to that size. So, we are rounding it
-	 * down to 8000000 bytes.
-	 *
-	 * @returns {number} 8000000 bytes.
-	 */
-	static getMaxBSONSize() {
-		return 8000000;
-	}
-
-	/**
-	 * Splits the passed in array to at least one array which has a size that
-	 * is safe to store in the database.
-	 *
-	 * @param {any[]} theArray The array to split out
-	 * @returns {any[][]} The safe sized arrays
-	 * @static
-	 */
 	static getBSONSafeArraysFromAnArray(theArray) {
-		const BSONSize = Base.getBSONSize(theArray);
-		const maxSize = Math.floor(theArray.length / (Math.ceil(BSONSize / Base.getMaxBSONSize())));
+		const BSONSize = Importer.Base.getBSONSize(theArray);
+		const maxSize = Math.floor(theArray.length / (Math.ceil(BSONSize / Importer.Base.MaxBSONSize)));
 		const safeArrays = [];
 		let i = 0;
 		while (i < theArray.length) {
@@ -62,23 +39,19 @@ export class Base {
 		return safeArrays;
 	}
 
-	/**
-	 * Constructs a new importer, adding an empty collection, AdmZip property, and empty users & channels
-	 *
-	 * @param {string} name The importer's name.
-	 * @param {string} description The i18n string which describes the importer
-	 * @param {string} mimeType The expected file type.
-	 */
-	constructor(info) {
-		if (!(info instanceof ImporterInfo)) {
-			throw new Error('Information passed in must be a valid ImporterInfo instance.');
-		}
-
+	// Constructs a new importer, adding an empty collection, AdmZip property, and empty users & channels
+	//
+	// @param [String] name the name of the Importer
+	// @param [String] description the i18n string which describes the importer
+	// @param [String] mimeType the of the expected file type
+	//
+	constructor(name, description, mimeType) {
 		this.http = http;
 		this.https = https;
 		this.AdmZip = AdmZip;
 		this.getFileType = getFileType;
 
+		this.MaxBSONSize = 8000000;
 		this.prepare = this.prepare.bind(this);
 		this.startImport = this.startImport.bind(this);
 		this.getSelection = this.getSelection.bind(this);
@@ -89,128 +62,112 @@ export class Base {
 		this.updateRecord = this.updateRecord.bind(this);
 		this.uploadFile = this.uploadFile.bind(this);
 
-		this.info = info;
+		this.name = name;
+		this.description = description;
+		this.mimeType = mimeType;
 
-		this.logger = new Logger(`${ this.info.name } Importer`, {});
-		this.progress = new Progress(this.info.key, this.info.name);
-		this.collection = RawImports;
+		this.logger = new Logger(`${ this.name } Importer`, {});
+		this.progress = new Importer.Progress(this.name);
+		this.collection = Importer.RawImports;
 
-		const importId = Imports.insert({ 'type': this.info.name, 'ts': Date.now(), 'status': this.progress.step, 'valid': true, 'user': Meteor.user()._id });
-		this.importRecord = Imports.findOne(importId);
+		const importId = Importer.Imports.insert({ 'type': this.name, 'ts': Date.now(), 'status': this.progress.step, 'valid': true, 'user': Meteor.user()._id });
+		this.importRecord = Importer.Imports.findOne(importId);
 
 		this.users = {};
 		this.channels = {};
 		this.messages = {};
 		this.oldSettings = {};
-
-		this.logger.debug(`Constructed a new ${ info.name } Importer.`);
 	}
 
-	/**
-	 * Takes the uploaded file and extracts the users, channels, and messages from it.
-	 *
-	 * @param {string} dataURI Base64 string of the uploaded file
-	 * @param {string} sentContentType The sent file type.
-	 * @param {string} fileName The name of the uploaded file.
-	 * @param {boolean} skipTypeCheck Optional property that says to not check the type provided.
-	 * @returns {Progress} The progress record of the import.
-	 */
-	prepare(dataURI, sentContentType, fileName, skipTypeCheck) {
-		if (!skipTypeCheck) {
-			const fileType = this.getFileType(new Buffer(dataURI.split(',')[1], 'base64'));
-			this.logger.debug('Uploaded file information is:', fileType);
-			this.logger.debug('Expected file type is:', this.info.mimeType);
+	// Takes the uploaded file and extracts the users, channels, and messages from it.
+	//
+	// @param [String] dataURI a base64 string of the uploaded file
+	// @param [String] sentContentType the file type
+	// @param [String] fileName the name of the uploaded file
+	//
+	// @return [Importer.Selection] Contains two properties which are arrays of objects, `channels` and `users`.
+	//
+	prepare(dataURI, sentContentType, fileName) {
+		const fileType = this.getFileType(new Buffer(dataURI.split(',')[1], 'base64'));
+		this.logger.debug('Uploaded file information is:', fileType);
+		this.logger.debug('Expected file type is:', this.mimeType);
 
-			if (!fileType || (fileType.mime !== this.info.mimeType)) {
-				this.logger.warn(`Invalid file uploaded for the ${ this.info.name } importer.`);
-				this.updateProgress(ProgressStep.ERROR);
-				throw new Meteor.Error('error-invalid-file-uploaded', `Invalid file uploaded to import ${ this.info.name } data from.`, { step: 'prepare' });
-			}
+		if (!fileType || (fileType.mime !== this.mimeType)) {
+			this.logger.warn(`Invalid file uploaded for the ${ this.name } importer.`);
+			this.updateProgress(Importer.ProgressStep.ERROR);
+			throw new Meteor.Error('error-invalid-file-uploaded', `Invalid file uploaded to import ${ this.name } data from.`, { step: 'prepare' });
 		}
 
-		this.updateProgress(ProgressStep.PREPARING_STARTED);
+		this.updateProgress(Importer.ProgressStep.PREPARING_STARTED);
 		return this.updateRecord({ 'file': fileName });
 	}
 
-	/**
-	 * Starts the import process. The implementing method should defer
-	 * as soon as the selection is set, so the user who started the process
-	 * doesn't end up with a "locked" UI while Meteor waits for a response.
-	 * The returned object should be the progress.
-	 *
-	 * @param {Selection} importSelection The selection data.
-	 * @returns {Progress} The progress record of the import.
-	 */
+	// Starts the import process. The implementing method should defer as soon as the selection is set, so the user who started the process
+	// doesn't end up with a "locked" ui while meteor waits for a response. The returned object should be the progress.
+	//
+	// @param [Importer.Selection] selectedUsersAndChannels an object with `channels` and `users` which contains information about which users and channels to import
+	//
+	// @return [Importer.Progress] the progress of the import
+	//
 	startImport(importSelection) {
-		if (!(importSelection instanceof Selection)) {
-			throw new Error(`Invalid Selection data provided to the ${ this.info.name } importer.`);
+		if (importSelection === undefined) {
+			throw new Error(`No selected users and channel data provided to the ${ this.name } importer.`); //TODO: Make translatable
 		} else if (importSelection.users === undefined) {
-			throw new Error(`Users in the selected data wasn't found, it must but at least an empty array for the ${ this.info.name } importer.`);
+			throw new Error(`Users in the selected data wasn't found, it must but at least an empty array for the ${ this.name } importer.`); //TODO: Make translatable
 		} else if (importSelection.channels === undefined) {
-			throw new Error(`Channels in the selected data wasn't found, it must but at least an empty array for the ${ this.info.name } importer.`);
+			throw new Error(`Channels in the selected data wasn't found, it must but at least an empty array for the ${ this.name } importer.`); //TODO: Make translatable
 		}
 
-		return this.updateProgress(ProgressStep.IMPORTING_STARTED);
+		return this.updateProgress(Importer.ProgressStep.IMPORTING_STARTED);
 	}
 
-	/**
-	 * Gets the Selection object for the import.
-	 *
-	 * @returns {Selection} The users and channels selection
-	 */
+	// Gets the Importer.Selection object for the import.
+	//
+	// @return [Importer.Selection] the users and channels selection
 	getSelection() {
-		throw new Error(`Invalid 'getSelection' called on ${ this.info.name }, it must be overridden and super can not be called.`);
+		throw new Error(`Invalid 'getSelection' called on ${ this.name }, it must be overridden and super can not be called.`);
 	}
 
-	/**
-	 * Gets the progress of this import.
-	 *
-	 * @returns {Progress} The progress record of the import.
-	 */
+	// Gets the progress of this importer.
+	//
+	// @return [Importer.Progress] the progress of the import
+	//
 	getProgress() {
 		return this.progress;
 	}
 
-	/**
-	 * Updates the progress step of this importer.
-	 * It also changes some internal settings at various stages of the import.
-	 * This way the importer can adjust user/room information at will.
-	 *
-	 * @param {ProgressStep} step The progress step which this import is currently at.
-	 * @returns {Progress} The progress record of the import.
-	 */
+	// Updates the progress step of this importer.
+	//
+	// @return [Importer.Progress] the progress of the import
+	//
 	updateProgress(step) {
 		this.progress.step = step;
 
 		switch (step) {
-			case ProgressStep.IMPORTING_STARTED:
+			case Importer.ProgressStep.IMPORTING_STARTED:
 				this.oldSettings.Accounts_AllowedDomainsList = RocketChat.models.Settings.findOneById('Accounts_AllowedDomainsList').value;
 				RocketChat.models.Settings.updateValueById('Accounts_AllowedDomainsList', '');
 
 				this.oldSettings.Accounts_AllowUsernameChange = RocketChat.models.Settings.findOneById('Accounts_AllowUsernameChange').value;
 				RocketChat.models.Settings.updateValueById('Accounts_AllowUsernameChange', true);
 				break;
-			case ProgressStep.DONE:
-			case ProgressStep.ERROR:
+			case Importer.ProgressStep.DONE:
+			case Importer.ProgressStep.ERROR:
 				RocketChat.models.Settings.updateValueById('Accounts_AllowedDomainsList', this.oldSettings.Accounts_AllowedDomainsList);
 				RocketChat.models.Settings.updateValueById('Accounts_AllowUsernameChange', this.oldSettings.Accounts_AllowUsernameChange);
 				break;
 		}
 
-		this.logger.debug(`${ this.info.name } is now at ${ step }.`);
+		this.logger.debug(`${ this.name } is now at ${ step }.`);
 		this.updateRecord({ 'status': this.progress.step });
-
-		ImporterWebsocket.progressUpdated(this.progress);
 
 		return this.progress;
 	}
 
-	/**
-	 * Adds the passed in value to the total amount of items needed to complete.
-	 *
-	 * @param {number} count The amount to add to the total count of items.
-	 * @returns {Progress} The progress record of the import.
-	 */
+	// Adds the passed in value to the total amount of items needed to complete.
+	//
+	// @return [Importer.Progress] the progress of the import
+	//
 	addCountToTotal(count) {
 		this.progress.count.total = this.progress.count.total + count;
 		this.updateRecord({ 'count.total': this.progress.count.total });
@@ -218,12 +175,10 @@ export class Base {
 		return this.progress;
 	}
 
-	/**
-	 * Adds the passed in value to the total amount of items completed.
-	 *
-	 * @param {number} count The amount to add to the total count of finished items.
-	 * @returns {Progress} The progress record of the import.
-	 */
+	// Adds the passed in value to the total amount of items completed.
+	//
+	// @return [Importer.Progress] the progress of the import
+	//
 	addCountCompleted(count) {
 		this.progress.count.completed = this.progress.count.completed + count;
 
@@ -233,33 +188,28 @@ export class Base {
 			this.updateRecord({ 'count.completed': this.progress.count.completed });
 		}
 
-		ImporterWebsocket.progressUpdated(this.progress);
-
 		return this.progress;
 	}
 
-	/**
-	 * Updates the import record with the given fields being `set`.
-	 *
-	 * @param {any} fields The fields to set, it should be an object with key/values.
-	 * @returns {Imports} The import record.
-	 */
+	// Updates the import record with the given fields being `set`
+	//
+	// @return [Importer.Imports] the import record object
+	//
 	updateRecord(fields) {
-		Imports.update({ _id: this.importRecord._id }, { $set: fields });
-		this.importRecord = Imports.findOne(this.importRecord._id);
+		Importer.Imports.update({ _id: this.importRecord._id }, { $set: fields });
+		this.importRecord = Importer.Imports.findOne(this.importRecord._id);
 
 		return this.importRecord;
 	}
 
-	/**
-	 * Uploads the file to the storage.
-	 *
-	 * @param {any} details An object with details about the upload: `name`, `size`, `type`, and `rid`.
-	 * @param {string} fileUrl Url of the file to download/import.
-	 * @param {any} user The Rocket.Chat user.
-	 * @param {any} room The Rocket.Chat Room.
-	 * @param {Date} timeStamp The timestamp the file was uploaded
-	 */
+	// Uploads the file to the storage.
+	//
+	// @param [Object] details an object with details about the upload. name, size, type, and rid
+	// @param [String] fileUrl url of the file to download/import
+	// @param [Object] user the Rocket.Chat user
+	// @param [Object] room the Rocket.Chat room
+	// @param [Date] timeStamp the timestamp the file was uploaded
+	//
 	uploadFile(details, fileUrl, user, room, timeStamp) {
 		this.logger.debug(`Uploading the file ${ details.name } from ${ fileUrl }.`);
 		const requestModule = /https/i.test(fileUrl) ? this.https : this.http;
@@ -321,4 +271,4 @@ export class Base {
 			}));
 		}));
 	}
-}
+};

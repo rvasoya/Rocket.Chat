@@ -2,10 +2,7 @@
 	&__label {
 		display: flex;
 
-		margin-right: -0.25rem;
 		margin-bottom: 0.5rem;
-		margin-left: -0.25rem;
-
 		align-items: center;
 	}
 
@@ -39,11 +36,10 @@
 
 	&__button {
 		display: block;
-		flex: 0 32px;
 
+		width: 32px;
 		height: 20px;
-		margin-right: 0.25rem;
-		margin-left: 0.25rem;
+		margin-right: 0.5rem;
 
 		cursor: pointer;
 		transition: all 0.2s cubic-bezier(0.65, 0.05, 0.36, 1);
@@ -70,11 +66,6 @@
 	}
 
 	&__text {
-		flex: 1;
-
-		margin-right: 0.25rem;
-		margin-left: 0.25rem;
-
 		cursor: pointer;
 
 		color: var(--color-dark);

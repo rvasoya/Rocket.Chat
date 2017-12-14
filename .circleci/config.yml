@@ -202,8 +202,14 @@ jobs:
           command: |
             for i in $(seq 1 5); do npm test && s=0 && break || s=$? && sleep 1; done; (exit $s)
 
-      - store_artifacts:
-          path: .screenshots/
+      # - run:
+      #     name: Build Failed
+      #     when: on_fail
+      #     command: |
+      #       cp -R .screenshots /tmp/screenshots
+
+      # - store_artifacts:
+      #     path: ~/repo/.screenshots
 
   deploy:
     <<: *defaults

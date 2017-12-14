@@ -44,7 +44,7 @@ Template.oembedUrlWidget.helpers({
 		if (this.meta.ogImage && this.meta.ogImage.replace) {
 			decodedOgImage = this.meta.ogImage.replace(/&amp;/g, '&');
 		}
-		let url = decodedOgImage || this.meta.twitterImage || this.meta.msapplicationTileImage;
+		let url = this.meta.msapplicationTileImage || decodedOgImage || this.meta.twitterImage;
 		if (url == null) {
 			return;
 		}

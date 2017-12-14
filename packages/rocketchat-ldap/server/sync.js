@@ -14,15 +14,6 @@ export function slug(text) {
 }
 
 
-export function getPropertyValue(obj, key) {
-	try {
-		return _.reduce(key.split('.'), (acc, el) => acc[el], obj);
-	} catch (err) {
-		return undefined;
-	}
-}
-
-
 export function getLdapUsername(ldapUser) {
 	const usernameField = RocketChat.settings.get('LDAP_Username_Field');
 
@@ -97,45 +88,16 @@ export function getDataToSyncUserData(ldapUser, user) {
 					break;
 
 				default:
-					const [outerKey, innerKeys] = userField.split(/\.(.+)/);
-
-					if (!_.find(whitelistedUserFields, (el) => el === outerKey)) {
+					if (!_.find(whitelistedUserFields, (el) => el === userField.split('.')[0])) {
 						logger.debug(`user attribute not whitelisted: ${ userField }`);
 						return;
 					}
 
-					if (outerKey === 'customFields') {
-						let customFieldsMeta;
-
-						try {
-							customFieldsMeta = JSON.parse(RocketChat.settings.get('Accounts_CustomFields'));
-						} catch (e) {
-							logger.debug('Invalid JSON for Custom Fields');
-							return;
-						}
-
-						if (!getPropertyValue(customFieldsMeta, innerKeys)) {
-							logger.debug(`user attribute does not exist: ${ userField }`);
-							return;
-						}
-					}
-
-					const tmpUserField = getPropertyValue(user, userField);
 					const tmpLdapField = RocketChat.templateVarHandler(ldapField, ldapUser);
+					const userFieldValue = _.reduce(userField.split('.'), (acc, el) => acc[el], user);
 
-					if (tmpLdapField && tmpUserField !== tmpLdapField) {
-						// creates the object structure instead of just assigning 'tmpLdapField' to
-						// 'userData[userField]' in order to avoid the "cannot use the part (...)
-						// to traverse the element" (MongoDB) error that can happen. Do not handle
-						// arrays.
-						// TODO: Find a better solution.
-						const dKeys = userField.split('.');
-						const lastKey = _.last(dKeys);
-						_.reduce(dKeys, (obj, currKey) =>
-							(currKey === lastKey)
-								? obj[currKey] = tmpLdapField
-								: obj[currKey] = obj[currKey] || {}
-							, userData);
+					if (tmpLdapField && userFieldValue !== tmpLdapField) {
+						userData[userField] = tmpLdapField;
 						logger.debug(`user.${ userField } changed to: ${ tmpLdapField }`);
 					}
 			}

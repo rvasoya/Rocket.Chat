@@ -61,11 +61,11 @@ Template.body.onRendered(function() {
 		if (target.id === 'pswp') {
 			return;
 		}
-		const inputMessage = $('.rc-message-box__textarea');
+		const inputMessage = $('textarea.rc-message-box__textarea');
 		if (inputMessage.length === 0) {
 			return;
 		}
-		inputMessage.focus();
+		return inputMessage.focus();
 	});
 
 	$(document.body).on('click', function(e) {

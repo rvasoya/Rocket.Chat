@@ -125,7 +125,7 @@ const markdownButtons = [
 	},
 	{
 		label: katexSyntax,
-		link: 'https://khan.github.io/KaTeX/function-support.html',
+		link: 'https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX',
 		condition: () => RocketChat.katex.katex_enabled()
 	}
 ];

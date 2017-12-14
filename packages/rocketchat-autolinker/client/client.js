@@ -25,7 +25,6 @@ function AutoLinker(message) {
 			email: RocketChat.settings.get('AutoLinker_Email'),
 			phone: RocketChat.settings.get('AutoLinker_Phone'),
 			twitter: false,
-			stripTrailingSlash: false,
 			replaceFn(match) {
 				if (match.getType() === 'url') {
 					if (regUrls.test(match.matchedText)) {

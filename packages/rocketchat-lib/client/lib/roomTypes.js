@@ -1,8 +1,7 @@
 import _ from 'underscore';
+import roomTypesCommon from '../../lib/roomTypesCommon';
 
-import { RoomTypesCommon } from '../../lib/RoomTypesCommon';
-
-RocketChat.roomTypes = new class RocketChatRoomTypes extends RoomTypesCommon {
+RocketChat.roomTypes = new class extends roomTypesCommon {
 	checkCondition(roomType) {
 		return roomType.condition == null || roomType.condition();
 	}
@@ -113,4 +112,5 @@ RocketChat.roomTypes = new class RocketChatRoomTypes extends RoomTypesCommon {
 		}
 		return this.roomTypes[roomType].notSubscribedTpl;
 	}
+
 };

@@ -104,6 +104,8 @@
 }
 
 .upload-preview {
+	padding: 1rem;
+
 	& .upload-preview-file {
 		height: 200px;
 
@@ -119,7 +121,7 @@
 	border-radius: 0 0 5px 5px;
 }
 
-.copyonly {
+.rc-old .copyonly {
 	display: inline-block;
 	float: left;
 
@@ -131,6 +133,50 @@
 
 	font-size: 0;
 	-moz-box-orient: vertical;
+}
+
+.rc-old .first-unread,
+.rc-old .cozy .first-unread,
+.rc-old .compact .first-unread {
+	&.message,
+	&.sequential.message {
+		padding-top: 20px;
+	}
+
+	& .body {
+		&::before {
+			position: absolute;
+			top: 0;
+			right: 0;
+			left: 0;
+
+			display: block;
+
+			height: 16px;
+
+			content: "";
+			transition: background-color, 0.5s, linear;
+		}
+
+		&::after {
+			position: absolute;
+			top: 0;
+			right: 0;
+			left: 0;
+
+			display: block;
+
+			padding: 0 5px;
+
+			content: attr(data-unread-text);
+			transition: color, 0.5s, linear;
+			text-align: center;
+			text-transform: uppercase;
+
+			font-size: 12px;
+			line-height: 16px;
+		}
+	}
 }
 
 .rc-old .text-center {
@@ -1726,11 +1772,8 @@
 	overflow: hidden;
 
 	height: 40px;
-	padding: 0 20px;
 
 	text-align: center;
-	white-space: nowrap;
-	text-overflow: ellipsis;
 
 	color: white;
 	background-color: #04436a;
@@ -2203,14 +2246,8 @@
 			right: 0;
 			left: 0;
 
-			overflow: hidden;
-
-			width: 50%;
-
 			height: 100%;
 			padding: 0 10px;
-
-			text-overflow: ellipsis;
 
 			& > a {
 				float: right;
@@ -2221,9 +2258,6 @@
 		}
 
 		& button {
-			position: relative;
-			z-index: 3;
-
 			float: right;
 
 			text-transform: uppercase;

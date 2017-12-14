@@ -1,4 +1,5 @@
-import { Importers } from 'meteor/rocketchat:importer';
+/* globals Importer */
+import _ from 'underscore';
 
 Template.adminImport.helpers({
 	isAdmin() {
@@ -8,7 +9,12 @@ Template.adminImport.helpers({
 		return TAPi18n.__('Importer_From_Description', { from: importer.name });
 	},
 	importers() {
-		return Importers.getAll();
+		const importers = [];
+		_.each(Importer.Importers, function(importer, key) {
+			importer.key = key;
+			return importers.push(importer);
+		});
+		return importers;
 	}
 });
 

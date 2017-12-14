@@ -1,7 +1,6 @@
-class ImportsModel extends RocketChat.models._Base {
+/* globals Importer */
+Importer.Imports = new (Importer.Imports = class Imports extends RocketChat.models._Base {
 	constructor() {
 		super('import');
 	}
-}
-
-export const Imports = new ImportsModel();
+});

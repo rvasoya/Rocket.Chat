@@ -1,7 +1,6 @@
-import { Importers } from 'meteor/rocketchat:importer';
-
+/* globals Importer */
 Meteor.methods({
-	setupImporter(key) {
+	setupImporter(name) {
 		if (!Meteor.userId()) {
 			throw new Meteor.Error('error-invalid-user', 'Invalid user', { method: 'setupImporter' });
 		}
@@ -10,18 +9,17 @@ Meteor.methods({
 			throw new Meteor.Error('error-action-not-allowed', 'Importing is not allowed', { method: 'setupImporter'});
 		}
 
-		const importer = Importers.get(key);
-
-		if (!importer) {
+		if ((Importer.Importers[name] != null ? Importer.Importers[name].importer : undefined) != null) {
+			const importer = Importer.Importers[name];
+			// If they currently have progress, get it and return the progress.
+			if (importer.importerInstance) {
+				return importer.importerInstance.getProgress();
+			} else {
+				importer.importerInstance = new importer.importer(importer.name, importer.description, importer.mimeType); //eslint-disable-line new-cap
+				return importer.importerInstance.getProgress();
+			}
+		} else {
 			console.warn(`Tried to setup ${ name } as an importer.`);
 			throw new Meteor.Error('error-importer-not-defined', 'The importer was not defined correctly, it is missing the Import class.', { method: 'setupImporter' });
 		}
-
-		if (importer.instance) {
-			return importer.instance.getProgress();
-		}
-
-		importer.instance = new importer.importer(importer); //eslint-disable-line new-cap
-		return importer.instance.getProgress();
-	}
-});
+	}});

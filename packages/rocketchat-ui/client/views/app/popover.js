@@ -1,7 +1,5 @@
 /* globals popover isRtl */
 
-import {UiTextContext} from 'meteor/rocketchat:lib';
-
 this.popover = {
 	renderedPopover: null,
 	open(config) {
@@ -185,9 +183,15 @@ Template.popover.events({
 		const { rid, name, template } = instance.data.data;
 
 		if (e.currentTarget.dataset.id === 'hide') {
-			const warnText = RocketChat.roomTypes.roomTypes[template].getUiText(UiTextContext.HIDE_WARNING);
+			let warnText;
+			switch (template) {
+				case 'c': warnText = 'Hide_Room_Warning'; break;
+				case 'p': warnText = 'Hide_Group_Warning'; break;
+				case 'd': warnText = 'Hide_Private_Warning'; break;
+				case 'l': warnText = 'Hide_Livechat_Warning'; break;
+			}
 
-			swal({
+			return swal({
 				title: t('Are_you_sure'),
 				text: warnText ? t(warnText, name) : '',
 				type: 'warning',
@@ -210,11 +214,7 @@ Template.popover.events({
 					}
 				});
 			});
-
-			return false;
-		}
-
-		if (e.currentTarget.dataset.id === 'leave') {
+		} else {
 			let warnText;
 			switch (template) {
 				case 'c': warnText = 'Leave_Room_Warning'; break;
@@ -225,7 +225,7 @@ Template.popover.events({
 
 			swal({
 				title: t('Are_you_sure'),
-				text: warnText ? t(warnText, name) : '',
+				text: t(warnText, name),
 				type: 'warning',
 				showCancelButton: true,
 				confirmButtonColor: '#DD6B55',
@@ -256,24 +256,6 @@ Template.popover.events({
 					swal.close();
 				}
 			});
-
-			return false;
-		}
-
-		if (e.currentTarget.dataset.id === 'read') {
-			Meteor.call('readMessages', rid);
-			return false;
-		}
-
-		if (e.currentTarget.dataset.id === 'favorite') {
-			Meteor.call('toggleFavorite', rid, !$(e.currentTarget).hasClass('rc-popover__item--star-filled'), function(err) {
-				popover.close();
-				if (err) {
-					handleError(err);
-				}
-			});
-
-			return false;
 		}
 	}
 });

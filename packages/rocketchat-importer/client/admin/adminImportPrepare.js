@@ -1,4 +1,5 @@
-import { Importers } from 'meteor/rocketchat:importer';
+/* globals Importer */
+import _ from 'underscore';
 import toastr from 'toastr';
 
 Template.adminImportPrepare.helpers({
@@ -7,8 +8,15 @@ Template.adminImportPrepare.helpers({
 	},
 	importer() {
 		const importerKey = FlowRouter.getParam('importer');
+		let importer = undefined;
+		_.each(Importer.Importers, function(i, key) {
+			i.key = key;
+			if (key === importerKey) {
+				return importer = i;
+			}
+		});
 
-		return Importers.get(importerKey);
+		return importer;
 	},
 	isLoaded() {
 		return Template.instance().loaded.get();
@@ -134,12 +142,9 @@ Template.adminImportPrepare.onCreated(function() {
 		if ((progress != null ? progress.step : undefined)) {
 			switch (progress.step) {
 				//When the import is running, take the user to the progress page
-				case 'importer_importing_started':
-				case 'importer_importing_users':
-				case 'importer_importing_channels':
-				case 'importer_importing_messages':
-				case 'importer_finishing':
+				case 'importer_importing_started': case 'importer_importing_users': case 'importer_importing_channels': case 'importer_importing_messages': case 'importer_finishing':
 					return FlowRouter.go(`/admin/import/progress/${ FlowRouter.getParam('importer') }`);
+				// when the import is done, restart it (new instance)
 				case 'importer_user_selection':
 					return Meteor.call('getSelectionData', FlowRouter.getParam('importer'), function(error, data) {
 						if (error) {

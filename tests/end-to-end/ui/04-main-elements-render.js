@@ -87,7 +87,7 @@ describe('[Main Elements Render]', function() {
 		describe('render:', () => {
 			before(() => {
 				sideNav.accountMenu.click();
-				sideNav.getPopOverContent().waitForVisible(10000);
+				sideNav.popOverContent.waitForVisible(5000);
 			});
 
 			after(() => {

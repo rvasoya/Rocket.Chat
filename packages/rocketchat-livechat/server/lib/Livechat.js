@@ -64,7 +64,7 @@ RocketChat.Livechat = {
 			room = Meteor.call('canAccessRoom', message.rid, guest._id);
 		}
 		if (!room) {
-			throw new Meteor.Error('cannot-access-room');
+			throw new Meteor.Error('cannot-acess-room');
 		}
 
 		return { room, newRoom };

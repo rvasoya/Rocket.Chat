@@ -1,0 +1,9 @@
+.annotate{
+	position: absolute;
+	background-color: blue;
+	border-radius: 50%;
+	color: blue;
+	width: 15px;
+	height: 15px;
+	border-color: lightblue;
+}

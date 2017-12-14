@@ -1,51 +1,45 @@
-/* globals roomExit */
-import { RoomTypeConfig } from './RoomTypeConfig';
-
-export class RoomTypesCommon {
+/* globals roomExit*/
+this.roomTypesCommon = class {
 	constructor() {
 		this.roomTypes = {};
 		this.roomTypesOrder = [];
 		this.mainOrder = 1;
 	}
 
-	/**
-	 * Adds a room type to the application.
-	 *
-	 * @param {RoomTypeConfig} roomConfig
-	 * @returns {void}
-	 */
-	add(roomConfig) {
-		if (!(roomConfig instanceof RoomTypeConfig)) {
-			throw new Error('Invalid Room Configuration object, it must extend "RoomTypeConfig"');
-		}
+	/* Adds a room type to app
+	@param identifier An identifier to the room type. If a real room, MUST BE the same of `db.rocketchat_room.t` field, if not, can be null
+	@param order Order number of the type
+	@param config
+	icon: icon class
+	label: i18n label
+	route:
+	name: route name
+	action: route action function
+	identifier: room type identifier
+	*/
 
-		if (this.roomTypes[roomConfig.identifier]) {
+	add(identifier = Random.id(), order, config) {
+		if (this.roomTypes[identifier] != null) {
 			return false;
 		}
-
-		if (!roomConfig.order) {
-			roomConfig.order = this.mainOrder + 10;
+		if (order == null) {
+			order = this.mainOrder + 10;
 			this.mainOrder += 10;
 		}
-
 		this.roomTypesOrder.push({
-			identifier: roomConfig.identifier,
-			order: roomConfig.order
+			identifier,
+			order
 		});
-
-		this.roomTypes[roomConfig.identifier] = roomConfig;
-
-		if (roomConfig.route && roomConfig.route.path && roomConfig.route.name && roomConfig.route.action) {
+		this.roomTypes[identifier] = {...config, identifier};
+		if (config.route && config.route.path && config.route.name && config.route.action) {
 			const routeConfig = {
-				name: roomConfig.route.name,
-				action: roomConfig.route.action
+				name: config.route.name,
+				action: config.route.action
 			};
-
 			if (Meteor.isClient) {
 				routeConfig.triggersExit = [roomExit];
 			}
-
-			return FlowRouter.route(roomConfig.route.path, routeConfig);
+			return FlowRouter.route(config.route.path, routeConfig);
 		}
 	}
 
@@ -53,15 +47,15 @@ export class RoomTypesCommon {
 		return this.roomTypes[roomType] && this.roomTypes[roomType].route && this.roomTypes[roomType].route.link != null;
 	}
 
-	/**
-	 * @param {string} roomType room type (e.g.: c (for channels), d (for direct channels))
-	 * @param {object} subData the user's subscription data
-	 */
+	/*
+	@param roomType: room type (e.g.: c (for channels), d (for direct channels))
+	@param subData: the user's subscription data
+	*/
+
 	getRouteLink(roomType, subData) {
-		if (!this.roomTypes[roomType]) {
+		if (this.roomTypes[roomType] == null) {
 			return false;
 		}
-
 		let routeData = {};
 		if (this.roomTypes[roomType] && this.roomTypes[roomType].route && this.roomTypes[roomType].route.link) {
 			routeData = this.roomTypes[roomType].route.link(subData);
@@ -70,15 +64,13 @@ export class RoomTypesCommon {
 				name: subData.name
 			};
 		}
-
 		return FlowRouter.path(this.roomTypes[roomType].route.name, routeData);
 	}
 
 	openRouteLink(roomType, subData, queryParams) {
-		if (!this.roomTypes[roomType]) {
+		if (this.roomTypes[roomType] == null) {
 			return false;
 		}
-
 		let routeData = {};
 		if (this.roomTypes[roomType] && this.roomTypes[roomType].route && this.roomTypes[roomType].route.link) {
 			routeData = this.roomTypes[roomType].route.link(subData);
@@ -87,7 +79,7 @@ export class RoomTypesCommon {
 				name: subData.name
 			};
 		}
-
 		return FlowRouter.go(this.roomTypes[roomType].route.name, routeData, queryParams);
 	}
-}
+};
+export default this.roomTypesCommon;

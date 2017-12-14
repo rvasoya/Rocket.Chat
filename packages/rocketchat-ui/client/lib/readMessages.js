@@ -125,6 +125,9 @@ const readMessage = new class {
 			return;
 		}
 
+		const $roomDom = $(room.dom);
+		$roomDom.find('.message.first-unread').addClass('first-unread-opaque');
+
 		if (!subscription.alert && (subscription.unread === 0)) {
 			room.unreadSince.set(undefined);
 			return;
@@ -134,6 +137,7 @@ const readMessage = new class {
 			return;
 		}
 
+		$roomDom.find('.message.first-unread').removeClass('first-unread').removeClass('first-unread-opaque');
 
 		let lastReadRecord = ChatMessage.findOne({
 			rid: subscription.rid,
@@ -180,7 +184,7 @@ const readMessage = new class {
 
 			if (firstUnreadRecord != null) {
 				room.unreadFirstId = firstUnreadRecord._id;
-				$(room.dom).find(`.message#${ firstUnreadRecord._id }`).addClass('first-unread');
+				return $roomDom.find(`.message#${ firstUnreadRecord._id }`).addClass('first-unread');
 			}
 		}
 	}

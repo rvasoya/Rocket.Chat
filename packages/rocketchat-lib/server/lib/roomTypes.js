@@ -1,12 +1,10 @@
-import { RoomTypesCommon } from '../../lib/RoomTypesCommon';
-
-RocketChat.roomTypes = new class roomTypesServer extends RoomTypesCommon {
-	/**
-	 * Add a publish for a room type
-	 *
-	 * @param {string} roomType room type (e.g.: c (for channels), d (for direct channels))
-	 * @param {function} callback function that will return the publish's data
+/* globals roomTypesCommon*/
+RocketChat.roomTypes = new class roomTypesServer extends roomTypesCommon {
+	/* add a publish for a room type
+	@param roomType: room type (e.g.: c (for channels), d (for direct channels))
+	@param callback: function that will return the publish's data
 	*/
+
 	setPublish(roomType, callback) {
 		if (this.roomTypes[roomType] && this.roomTypes[roomType].publish != null) {
 			throw new Meteor.Error('route-publish-exists', 'Publish for the given type already exists');
@@ -26,19 +24,17 @@ RocketChat.roomTypes = new class roomTypesServer extends RoomTypesCommon {
 		}
 		return this.roomTypes[roomType].roomFind = callback;
 	}
-
 	getRoomFind(roomType) {
 		return this.roomTypes[roomType] && this.roomTypes[roomType].roomFind;
 	}
 
 
-	/**
-	 * Run the publish for a room type
-	 *
-	 * @param scope Meteor publish scope
-	 * @param {string} roomType room type (e.g.: c (for channels), d (for direct channels))
-	 * @param identifier identifier of the room
+	/* run the publish for a room type
+	@param scope: Meteor publish scope
+	@param roomType: room type (e.g.: c (for channels), d (for direct channels))
+	@param identifier: identifier of the room
 	*/
+
 	runPublish(scope, roomType, identifier) {
 		return this.roomTypes[roomType] && this.roomTypes[roomType].publish && this.roomTypes[roomType].publish.call(scope, identifier);
 	}

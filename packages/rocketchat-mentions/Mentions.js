@@ -31,7 +31,7 @@ export default class {
 		return new RegExp(`@(${ this.pattern })`, 'gm');
 	}
 	get channelMentionRegex() {
-		return new RegExp(`^#(${ this.pattern })| #(${ this.pattern })`, 'gm');
+		return new RegExp(`#(${ this.pattern })`, 'gm');
 	}
 	replaceUsers(str, message, me) {
 		return str.replace(this.userMentionRegex, (match, username) => {
@@ -50,17 +50,10 @@ export default class {
 	}
 	replaceChannels(str, message) {
 		//since apostrophe escaped contains # we need to unescape it
-		return str.replace(/&#39;/g, '\'').replace(this.channelMentionRegex, (match, n1, n2) => {
-			const name = n1 || n2;
+		return str.replace(/&#39;/g, '\'').replace(this.channelMentionRegex, (match, name) => {
 			if (message.temp == null && _.findWhere(message.channels, {name}) == null) {
 				return match;
 			}
-
-			// remove the link from inside the link and put before
-			if (/^\s/.test(match)) {
-				return ` <a class="mention-link" data-channel="${ name }">${ match.trim() }</a>`;
-			}
-
 			return `<a class="mention-link" data-channel="${ name }">${ match }</a>`;
 		});
 	}
@@ -68,7 +61,7 @@ export default class {
 		return str.match(this.userMentionRegex) || [];
 	}
 	getChannelMentions(str) {
-		return (str.match(this.channelMentionRegex) || []).map(match => match.trim());
+		return str.match(this.channelMentionRegex) || [];
 	}
 	parse(message) {
 		let msg = (message && message.html) || '';

@@ -1,5 +1,3 @@
-/* globals RocketChat */
-
 Meteor.methods({
 	eraseRoom(rid) {
 		check(rid, String);
@@ -10,6 +8,7 @@ Meteor.methods({
 			});
 		}
 
+		const fromId = Meteor.userId();
 		const room = RocketChat.models.Rooms.findOneById(rid);
 
 		if (!room) {
@@ -18,7 +17,7 @@ Meteor.methods({
 			});
 		}
 
-		if (RocketChat.roomTypes.roomTypes[room.t].canBeDeleted(room)) {
+		if (RocketChat.authz.hasPermission(fromId, `delete-${ room.t }`, rid)) {
 			RocketChat.models.Messages.removeByRoomId(rid);
 			RocketChat.models.Subscriptions.removeByRoomId(rid);
 			return RocketChat.models.Rooms.removeById(rid);

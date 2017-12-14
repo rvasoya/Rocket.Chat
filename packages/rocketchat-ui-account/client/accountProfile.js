@@ -123,9 +123,6 @@ Template.accountProfile.helpers({
 		const user = Meteor.user();
 		return user.emails && user.emails[0] && user.emails[0].verified;
 	},
-	allowRealNameChange() {
-		return RocketChat.settings.get('Accounts_AllowRealNameChange');
-	},
 	allowUsernameChange() {
 		return RocketChat.settings.get('Accounts_AllowUsernameChange') && RocketChat.settings.get('LDAP_Enable') !== true;
 	},
@@ -206,14 +203,7 @@ Template.accountProfile.onCreated(function() {
 			data.newPassword = self.password.get();
 		}
 		if (s.trim(self.realname.get()) !== user.name) {
-			if (!RocketChat.settings.get('Accounts_AllowRealNameChange')) {
-				toastr.remove();
-				toastr.error(t('RealName_Change_Disabled'));
-				instance.clearForm();
-				return cb && cb();
-			} else {
-				data.realname = s.trim(self.realname.get());
-			}
+			data.realname = s.trim(self.realname.get());
 		}
 		if (s.trim(self.username.get()) !== user.username) {
 			if (!RocketChat.settings.get('Accounts_AllowUsernameChange')) {
