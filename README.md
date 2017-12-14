@@ -1,3 +1,6 @@
+added New Branch "annotation" for annotaion purpose
+Checkout that branch to see changes.
+
 ![Rocket.Chat logo](https://rocket.chat/images/logo/logo-dark.svg?v3)
 
 # The Ultimate Open Source WebChat Platform
