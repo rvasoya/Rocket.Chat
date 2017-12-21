@@ -8,7 +8,7 @@ Meteor.publish('annotateMessage', function(roomId, fileId, limit = 50) {
 		added(_id, record) {
       record.annotation.forEach(item=>{
         console.log('adding',item);
-        publication.added('rocketchat_annotate_dots', item._id, item.annotation);
+        publication.added('rocketchat_annotate_dots', item._id, item);
       })
 		},
 		changed(_id, record) {

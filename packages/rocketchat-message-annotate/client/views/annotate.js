@@ -3,7 +3,7 @@ import _ from 'underscore';
 
 Template.annotateTemplate.helpers({
 	annotation(){
-		console.log('annotate ====>',AnnotateDots.find().fetch());
+		console.log('annotate ====>',AnnotateDots.find({}).fetch());
 		return AnnotateDots.find({
 			rid: this.rid
 		}).count() > 0;
