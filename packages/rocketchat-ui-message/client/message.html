@@ -57,9 +57,21 @@
 					{{injectIndex . @index}} {{> oembedBaseWidget}}
 				{{/each}}
 			{{/if}}
-			{{#each attachments}}
-				{{injectIndex . @index}} {{> messageAttachment}}
-			{{/each}}
+			{{#if isAnnotated}}
+				Annotated Message
+				{{#each item in annotation}}
+					<div class="">
+						{{item.review}}
+					</div>
+				{{/each}}
+				{{#each attachments}}
+					{{injectIndex . @index true}} {{> messageAttachment}}
+				{{/each}}
+			{{else}}
+				{{#each attachments}}
+					{{injectIndex . @index false}} {{> messageAttachment}}
+				{{/each}}
+			{{/if}}
 		</div>
 		{{#unless system}}
 			<div class="message-actions">

@@ -88,12 +88,10 @@ Template.photoswipe.events({
 		let originalEvent = event;
 
 		let marker = {
-			_id : Random.id(),
 			i : target.src.split('/')[4],
-			u : Meteor.userId(),
-			username : Meteor.user().fullname,
 			x : (originalEvent.clientX - rect.left) / rect.width * 100,
-			y : (originalEvent.clientY - rect.top) / rect.height * 100
+			y : (originalEvent.clientY - rect.top) / rect.height * 100,
+			rid : Session.get('openedRoom')
 		}
 		swal({
 			title:'Add content',
@@ -118,7 +116,6 @@ Template.photoswipe.events({
 						return console.log(err);
 					if(result){
 						console.log(result);
-						$('#'+result.i).parent().append('<div class="annotate" id="'+result._id+'" style="left:'+result.x+'%;top:'+result.y+'%"></div>');
 						galleryInstance.close()
 						swal({
 							title: 'Annotation',

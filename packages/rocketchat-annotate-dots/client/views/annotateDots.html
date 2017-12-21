@@ -1,0 +1,14 @@
+<template name="annotateDots">
+	{{#if Template.subscriptionsReady}}
+		<div class="">
+		  ready
+		</div>
+	{{/if}}
+  {{#if hasAnnotation}}
+    {{#each item in annotation}}
+      <div class="annotate">
+          {{item.review}}
+      </div>
+    {{/each}}
+  {{/if}}
+</template>

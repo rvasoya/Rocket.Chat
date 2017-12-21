@@ -3,17 +3,28 @@
 		<div class="title">
 			<h2>Annotation</h2>
 		</div>
-			<h2>No new annotation</h2>
+		{{#if Template.subscriptionsReady}}
+			{{#unless hasAnnotation}}
+				<h2>No Annotation</h2>
+			{{/unless}}
+		{{/if}}
 	</div>
 	<div class="flex-tab__result js-list">
 		<ul class="list clearfix">
-				{{> messageAttachment}}
+			<!-- {{#each item in annotation}} -->
+			{{#each item in annotation}}
+				<li class="background-transparent-dark-hover annotation-message-list" data-id="{{item._id}}">
+					{{item.review}} created by {{item.username}}
+						<!-- {{item.x}} {{item.y}} -->
+				</li>
+				{{/each}}
+			<!-- {{/each}} -->
 		</ul>
 
-		<!-- {{#if hasMore}}
+		{{#if hasMore}}
 			<div class="load-more">
 				{{> loading}}
 			</div>
-		{{/if}} -->
+		{{/if}}
 	</div>
 </template>

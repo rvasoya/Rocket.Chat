@@ -1,5 +1,12 @@
 <template name="annotateTemplate">
-	<div class="annotate" style="">
-		awdw
-	</div>
+	{{#if Template.subscriptionsReady}}
+		<div class="">
+			annotation			
+		</div>
+	{{/if}}
+	{{#if annotation}}
+		<div class="annotate" style="{{_id}}">
+
+		</div>
+	{{/if}}
 </template>

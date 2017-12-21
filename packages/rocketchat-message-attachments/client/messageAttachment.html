@@ -66,11 +66,11 @@
 					<div class="attachment-image">
 					{{#if loadImage}}
 						<figure>
-								<div class="annotation inline-image" data-id="{{getimageId image_url}}" style="background-image: url('{{fixCordova image_url}}');">
-									<!-- {{#if annotation}} -->
-										<!-- {{> annotate}} -->
-										<!-- {{/if}} -->
-									<img src="{{fixCordova image_url}}" height="{{getImageHeight image_dimensions.height}}" class="gallery-item" id="{{getimageId image_url}}" data-title="{{title}}" data-description="{{description}}">
+								<div class="annotation inline-image" data-id="{{getimageId}}" style="background-image: url('{{fixCordova image_url}}');">
+									<img src="{{fixCordova image_url}}" height="{{getImageHeight image_dimensions.height}}" class="gallery-item" id="{{getimageId}}" data-title="{{title}}" data-description="{{description}}">
+									{{#if isAnnotated}}
+										{{getimageIndexId . image_url}} {{> annotateTemplate}}
+									{{/if}}
 								</div>
 							{{#if labels}}
 								<div class="image-labels">

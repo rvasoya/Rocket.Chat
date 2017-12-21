@@ -6,16 +6,22 @@ Package.describe({
 
 Package.onUse(function(api) {
 	api.use([
+		'mongo',
 		'templating',
 		'ecmascript',
 		'rocketchat:lib'
 	]);
 
 	api.addFiles([
-		// 'client/actionButton.js',
+		'client/lib/AnnotateDots.js',
 		'client/views/annotate.html',
 		'client/views/annotate.js',
 		'client/views/stylesheets/annotate.css'
 	], 'client');
+
+	api.addFiles([
+		// 'server/annotate.js',
+		'server/publications/annotate.js'
+	],'server');
 
 });

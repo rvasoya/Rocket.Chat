@@ -1,52 +1,27 @@
 /* globals Annotation */
 import _ from 'underscore';
 
-// Template.annotationTemplate.helpers({
-// 	// hasMessages() {
-// 	// 	return PinnedMessage.find({
-// 	// 		rid: this.rid
-// 	// 	}, {
-// 	// 		sort: {
-// 	// 			ts: -1
-// 	// 		}
-// 	// 	}).count() > 0;
-// 	// },
-// 	// messages() {
-// 	// 	return PinnedMessage.find({
-// 	// 		rid: this.rid
-// 	// 	}, {
-// 	// 		sort: {
-// 	// 			ts: -1
-// 	// 		}
-// 	// 	});
-// 	// },
-// 	// message() {
-// 	// 	return _.extend(this, { customClass: 'pinned', actionContext: 'pinned'});
-// 	// },
-// 	// hasMore() {
-// 	// 	return Template.instance().hasMore.get();
-// 	// }
-// });
-
-Template.annotateTemplate.onCreated(function() {
-	this.hasMore = new ReactiveVar(true);
-	this.limit = new ReactiveVar(50);
-	// return this.autorun(() => {
-	// 	const data = Template.currentData();
-	// 	return this.subscribe('pinnedMessages', data.rid, this.limit.get(), () => {
-	// 		if (PinnedMessage.find({
-	// 			rid: data.rid
-	// 		}).count() < this.limit.get()) {
-	// 			return this.hasMore.set(false);
-	// 		}
-	// 	});
-	// });
+Template.annotateTemplate.helpers({
+	annotation(){
+		console.log('annotate ====>',AnnotateDots.find().fetch());
+		return AnnotateDots.find({
+			rid: this.rid
+		}).count() > 0;
+	}
 });
 
-// Template.annotateTemplate.events({
-// 	// 'scroll .js-list': _.throttle(function(e, instance) {
-// 	// 	if (e.target.scrollTop >= e.target.scrollHeight - e.target.clientHeight && instance.hasMore.get()) {
-// 	// 		return instance.limit.set(instance.limit.get() + 50);
-// 	// 	}
-// 	// }, 200)
-// });
+Template.annotateTemplate.onCreated(function() {
+	return this.autorun(() => {
+		console.log(AnnotateDots);
+		const data = Template.currentData();
+		return this.subscribe('annotateMessage', Session.get('openedRoom'), data._id, () => {
+				console.log('hahahahahaha');
+		});
+	});
+});
+
+Template.annotateTemplate.events({
+	'click .annotate'(e, instance) {
+			console.log(e.target);
+		}
+});

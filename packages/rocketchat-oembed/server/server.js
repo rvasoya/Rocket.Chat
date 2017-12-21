@@ -284,6 +284,7 @@ OEmbed.rocketUrlParser = function(message) {
 			}
 		});
 		if (attachments.length) {
+			console.log(attachments)
 			RocketChat.models.Messages.setMessageAttachments(message._id, attachments);
 		}
 		if (changed === true) {

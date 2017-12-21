@@ -239,6 +239,35 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base {
 		return this.find(query, options);
 	}
 
+
+	findAnnotatedByRoom(roomId, options) {
+		const query = {
+			rid: roomId,
+			isAnnotated: true
+		};
+
+		return this.find(query, options)
+	}
+
+	getMessageAnnotationByFileId(roomId, fileId) {
+		const query = {
+			rid: roomId,
+			'file._id':fileId,
+			isAnnotated: true
+		};
+		return this.find(query);
+	}
+
+	getAnnotatedMessageByFileAndRoom(roomId, fileId, options) {
+		const query = {
+			rid: roomId,
+			'file._id': fileId,
+			isAnnotated: true
+		}
+		console.log('meesage found ===>',this.find(query).fetch())
+		return this.find(query, options)
+	}
+
 	findSnippetedByRoom(roomId, options) {
 		const query = {
 			_hidden: { $ne: true },
@@ -347,6 +376,20 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base {
 			}
 		};
 
+		return this.update(query, update);
+	}
+
+	setAnnotationByIdAndAnnotation(_id, annotation) {
+		const query =	{_id};
+
+		const update = {
+			$push : {
+				'annotation':annotation
+			},
+			$set : {
+				isAnnotated : true
+			}
+		};
 		return this.update(query, update);
 	}
 

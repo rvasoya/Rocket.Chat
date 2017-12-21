@@ -6,12 +6,14 @@ Package.describe({
 
 Package.onUse(function(api) {
 	api.use([
+		'mongo',
 		'templating',
 		'ecmascript',
 		'rocketchat:lib'
 	]);
 
 	api.addFiles([
+		'client/lib/annotationMessage.js',
 		'client/actionButton.js',
 		'client/tabBar.js',
 		'client/views/annotation.html',
@@ -20,6 +22,8 @@ Package.onUse(function(api) {
 	], 'client');
 
 	api.addFiles([
+		'server/publications/annotationMessage.js',
+		'server/settings.js',
 		'server/annotationMessage.js'
 	],'server')
 

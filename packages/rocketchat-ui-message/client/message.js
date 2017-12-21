@@ -255,7 +255,9 @@ Template.message.helpers({
 			return 'hidden';
 		}
 	},
-	injectIndex(data, index) {
+	injectIndex(data, index, val) {
+		if(val)
+			data.isAnnotated = true;
 		data.index = index;
 	},
 	hideCog() {

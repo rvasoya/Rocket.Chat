@@ -4,12 +4,6 @@ const colors = {
 	warning: '#FCB316',
 	danger: '#D30230'
 };
-const getimageId = function(url){
-	if (url && url.indexOf('/file-upload/') === 0) {
-		let id = url.replace('/file-upload/','').split('/')
-		return id[0];
-	}
-};
 const fixCordova = function(url) {
 	if (url && url.indexOf('data:image') === 0) {
 		return url;
@@ -33,8 +27,15 @@ const fixCordova = function(url) {
 };
 /*globals renderMessageBody*/
 Template.messageAttachment.helpers({
-	getimageId,
 	fixCordova,
+	getimageId() {
+		if (this.image_url && this.image_url.indexOf('/file-upload/') === 0) {
+			return this.image_url.replace('/file-upload/','').split('/')[0]
+		}
+	},
+	getimageIndexId(data, url){
+		data._id = url.replace('/file-upload/','').split('/')[0]
+	},
 	parsedText() {
 		return renderMessageBody({
 			msg: this.text
