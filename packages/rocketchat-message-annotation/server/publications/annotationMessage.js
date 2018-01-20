@@ -10,16 +10,19 @@ Meteor.publish('annotationMessage', function(rid, limit = 50) {
 	}
 	const cursorHandle = RocketChat.models.Messages.findAnnotatedByRoom(rid, { sort: { ts: -1 }, limit }).observeChanges({
 		added(_id, record) {
+			// publication.added('rocketchat_annotation_message', _id, record);
 			record.annotation.forEach(item=>{
 				publication.added('rocketchat_annotation_message', item._id, item);
 			})
 		},
 		changed(_id, record) {
+			// publication.added('rocketchat_annotation_message', _id, record);
 			record.annotation.forEach(item=>{
-				publication.changed('rocketchat_annotation_message', item._id, item.annotation);
+				publication.changed('rocketchat_annotation_message', item._id, item);
 			})
 		},
 		removed(_id) {
+			// publication.removed('rocketchat_annotation_message', _id);
 			record.annotation.forEach(item=>{
 				publication.removed('rocketchat_annotation_message', item._id);
 			})

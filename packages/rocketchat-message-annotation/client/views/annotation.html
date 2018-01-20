@@ -9,16 +9,32 @@
 			{{/unless}}
 		{{/if}}
 	</div>
-	<div class="flex-tab__result js-list">
+	{{{body}}}
+	<div class="flex-tab__result js-list  annotationList">
 		<ul class="list clearfix">
-			<!-- {{#each item in annotation}} -->
 			{{#each item in annotation}}
-				<li class="background-transparent-dark-hover annotation-message-list" data-id="{{item._id}}">
-					{{item.review}} created by {{item.username}}
-						<!-- {{item.x}} {{item.y}} -->
+				<li class="annotation-message message background-transparent-dark-hover" data-id="{{item._id}}" data-mid="{{item.mid}}">
+					<!-- user image -->
+					<button class="thumb user-card-message" data-username="{{item.username}}" tabindex="1">{{> avatar username=item.username}}</button>
+					<!-- user name -->
+					<button type="button" class="user user-card-message color-primary-font-color" data-username="{{item.username}}" tabindex="1">
+						{{item.username}}
+					</button>
+					<span class="info border-component-color color-info-font-color">
+						<span class="time" title='{{date item.at}} {{time item.at}}'>{{date item.at}}</span>
+					</span>
+					<!-- annotation text -->
+					<div class="body color-primary-font-color">
+					{{item.review}}
+					</div>
+					<!-- created by {{item.username}} -->
+					<div class="annotation-actions">
+						<div class="annotation-actions__menu">
+							{{> icon block="annotation-actions__menu-icon" icon="menu"}}
+						</div>
+					</div>
 				</li>
-				{{/each}}
-			<!-- {{/each}} -->
+			{{/each}}
 		</ul>
 
 		{{#if hasMore}}

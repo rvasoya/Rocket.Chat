@@ -1,0 +1,9 @@
+<template name="annotateTemplate">
+  {{#if Template.subscriptionsReady}}
+    {{#if hasAnnotation}}
+      {{#each item in annotation}}
+      <div class="annotate" data-id="{{item._id}}" style="top:{{item.y}}%;left:{{item.x}}%"></div>
+      {{/each}}
+    {{/if}}
+  {{/if}}
+</template>

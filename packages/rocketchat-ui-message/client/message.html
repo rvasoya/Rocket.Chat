@@ -58,12 +58,6 @@
 				{{/each}}
 			{{/if}}
 			{{#if isAnnotated}}
-				Annotated Message
-				{{#each item in annotation}}
-					<div class="">
-						{{item.review}}
-					</div>
-				{{/each}}
 				{{#each attachments}}
 					{{injectIndex . @index true}} {{> messageAttachment}}
 				{{/each}}

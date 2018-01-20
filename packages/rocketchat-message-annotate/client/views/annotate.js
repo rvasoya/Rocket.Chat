@@ -3,19 +3,19 @@ import _ from 'underscore';
 
 Template.annotateTemplate.helpers({
 	annotation(){
-		console.log('annotate ====>',AnnotateDots.find({}).fetch());
-		return AnnotateDots.find({
-			rid: this.rid
-		}).count() > 0;
+		console.log(Template.instance().dots.get());
 	}
 });
 
 Template.annotateTemplate.onCreated(function() {
+	this.dots = new ReactiveVar();
 	return this.autorun(() => {
-		console.log(AnnotateDots);
 		const data = Template.currentData();
-		return this.subscribe('annotateMessage', Session.get('openedRoom'), data._id, () => {
-				console.log('hahahahahaha');
+		Meteor.call('getAnnotation', data._id, (err, data) => {
+			if(err)
+				return console.log(err);
+			console.log(data);
+			this.dots.set(data)
 		});
 	});
 });

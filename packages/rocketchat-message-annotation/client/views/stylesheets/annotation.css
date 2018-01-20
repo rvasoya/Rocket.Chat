@@ -1,3 +1,19 @@
-.annotation-message-list{
-	padding: 10px;
+.annotation-actions{
+	position: absolute;
+  top: 2px;
+  right: 0.4rem;
+  display: none;
+  color: #6c727a;
+  font-size: 1rem;
+}
+.annotation-actions__menu{
+	padding: 2px 0;
+	cursor: pointer;
+}
+.annotation-actions__menu-icon{
+	fill: currentColor;
+}
+.annotation-message:hover .annotation-actions, .annotation-message:focus .annotation-actions {
+    display: -webkit-flex;
+    display: flex;
 }

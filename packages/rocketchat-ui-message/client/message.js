@@ -256,8 +256,10 @@ Template.message.helpers({
 		}
 	},
 	injectIndex(data, index, val) {
-		if(val)
-			data.isAnnotated = true;
+		if(val){
+			data.isAnnotated = Template.instance().data.isAnnotated;
+			data.annotation = Template.instance().data.annotation
+		}
 		data.index = index;
 	},
 	hideCog() {

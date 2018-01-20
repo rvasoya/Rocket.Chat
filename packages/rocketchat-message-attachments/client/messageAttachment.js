@@ -36,6 +36,9 @@ Template.messageAttachment.helpers({
 	getimageIndexId(data, url){
 		data._id = url.replace('/file-upload/','').split('/')[0]
 	},
+	getAnnotation(){
+		console.log(this);
+	},
 	parsedText() {
 		return renderMessageBody({
 			msg: this.text
@@ -84,3 +87,11 @@ Template.messageAttachment.helpers({
 		return this.type === 'file';
 	}
 });
+
+$(document).on('click','.annotate',(e)=>{
+	// console.log($(e.currentTarget).attr('data-id'));
+	AnnotationHistoryManager.getSurroundingMessages({
+		_id: $(e.currentTarget).attr('data-id'),
+		rid:Session.get('openedRoom')
+	}, 50)
+})

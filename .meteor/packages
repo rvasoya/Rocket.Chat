@@ -89,7 +89,7 @@ rocketchat:mapview
 rocketchat:markdown
 rocketchat:mentions
 rocketchat:mentions-flextab
-rocketchat:message-annotate
+rocketchat:mannotate
 rocketchat:message-annotation
 rocketchat:message-attachments
 rocketchat:message-mark-as-unread

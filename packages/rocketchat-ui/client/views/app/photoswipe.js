@@ -11,6 +11,13 @@ Meteor.startup(() => {
 		const gallery = new PhotoSwipe(selector, PhotoSwipeUI_Default, items, options);
 		galleryInstance = gallery;
 		gallery.init();
+		// Image loaded callback for annotation
+		gallery.listen('imageLoadComplete', function(index, item) {
+		    // gallery.shout('getAnnotation', gallery.currItem.src.split('/')[4]);
+		});
+		gallery.listen('afterChange', () => {
+			// gallery.shout('getAnnotation', gallery.currItem.src.split('/')[4]);
+		});
 	};
 	const getItems = (selector, imageSrc) => {
 		const results = {
@@ -26,7 +33,6 @@ Meteor.startup(() => {
 				title: selector[i].dataset.title,
 				description: selector[i].dataset.description
 			});
-
 			if (imageSrc === selector[i].src) {
 				results.index = i;
 			}
@@ -56,7 +62,6 @@ Meteor.startup(() => {
 			captionEl.children[0].innerHTML = `${ escapeHTML(item.title) }<br/><small>${ escapeHTML(item.description) }</small> `;
 			return true;
 		};
-
 		initGallery(document.getElementById('pswp'), images.items, galleryOptions);
 	});
 Template.photoswipe.helpers({
@@ -78,7 +83,6 @@ Template.photoswipe.helpers({
 			return roomData.name;
 		}
 	}
-
 })
 Template.photoswipe.events({
 
@@ -86,13 +90,15 @@ Template.photoswipe.events({
 		let target = event.target || event.srcElement;
 		let rect = target.getBoundingClientRect();
 		let originalEvent = event;
-
+		let x = (originalEvent.clientX - rect.left) / rect.width * 100;
+		let y = (originalEvent.clientY - rect.top) / rect.height * 100;
 		let marker = {
 			i : target.src.split('/')[4],
-			x : (originalEvent.clientX - rect.left) / rect.width * 100,
-			y : (originalEvent.clientY - rect.top) / rect.height * 100,
+			x : x-4,
+			y : y-4,
 			rid : Session.get('openedRoom')
 		}
+		// console.log(marker);
 		swal({
 			title:'Add content',
 			text: 'annotation text',
@@ -115,7 +121,6 @@ Template.photoswipe.events({
 					if(err)
 						return console.log(err);
 					if(result){
-						console.log(result);
 						galleryInstance.close()
 						swal({
 							title: 'Annotation',

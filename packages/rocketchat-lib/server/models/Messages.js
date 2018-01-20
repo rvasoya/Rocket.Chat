@@ -258,14 +258,12 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base {
 		return this.find(query);
 	}
 
-	getAnnotatedMessageByFileAndRoom(roomId, fileId, options) {
+	getAnnotatedMessageByFile(fileId, options) {
 		const query = {
-			rid: roomId,
 			'file._id': fileId,
 			isAnnotated: true
 		}
-		console.log('meesage found ===>',this.find(query).fetch())
-		return this.find(query, options)
+		return this.find(query, options);
 	}
 
 	findSnippetedByRoom(roomId, options) {

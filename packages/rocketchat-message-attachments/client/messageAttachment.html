@@ -69,8 +69,16 @@
 								<div class="annotation inline-image" data-id="{{getimageId}}" style="background-image: url('{{fixCordova image_url}}');">
 									<img src="{{fixCordova image_url}}" height="{{getImageHeight image_dimensions.height}}" class="gallery-item" id="{{getimageId}}" data-title="{{title}}" data-description="{{description}}">
 									{{#if isAnnotated}}
-										{{getimageIndexId . image_url}} {{> annotateTemplate}}
+										{{#each item in annotation}}
+											<div class="annotate" data-id="{{item._id}}" style="top:{{item.y}}%;left:{{item.x}}%"></div>
+										{{/each}}
+										<!-- {{getAnnotation}} -->
+										<!-- {{annotation}} -->
+										<!-- {{getimageIndexId . image_url}} {{> annotateTemplate}} -->
 									{{/if}}
+									<!-- {{#if isAnnotated}}
+										{{getAnnotation . annotation}} {{> annotate}}
+									{{/if}} -->
 								</div>
 							{{#if labels}}
 								<div class="image-labels">

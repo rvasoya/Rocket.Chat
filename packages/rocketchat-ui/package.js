@@ -53,6 +53,7 @@ Package.onUse(function(api) {
 	api.addFiles('client/lib/readMessages.js', 'client');
 	api.addFiles('client/lib/rocket.js', 'client');
 	api.addFiles('client/lib/RoomHistoryManager.js', 'client');
+	api.addFiles('client/lib/AnnotationHistoryManager.js', 'client');
 	api.addFiles('client/lib/RoomManager.js', 'client');
 	api.addFiles('client/lib/sideNav.js', 'client');
 	api.addFiles('client/lib/tapi18n.js', 'client');
