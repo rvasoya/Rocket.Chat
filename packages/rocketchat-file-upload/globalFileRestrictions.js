@@ -15,9 +15,9 @@ const slingShotConfig = {
 
 		const maxFileSize = RocketChat.settings.get('FileUpload_MaxFileSize');
 
-		if (maxFileSize && maxFileSize < file.size) {
-			throw new Meteor.Error(TAPi18n.__('File_exceeds_allowed_size_of_bytes', { size: filesize(maxFileSize) }));
-		}
+		// if (maxFileSize && maxFileSize < file.size) {
+		// 	throw new Meteor.Error(TAPi18n.__('File_exceeds_allowed_size_of_bytes', { size: filesize(maxFileSize) }));
+		// }
 
 		return true;
 	},

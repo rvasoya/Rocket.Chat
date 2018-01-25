@@ -72,13 +72,7 @@
 										{{#each item in annotation}}
 											<div class="annotate" data-id="{{item._id}}" style="top:{{item.y}}%;left:{{item.x}}%"></div>
 										{{/each}}
-										<!-- {{getAnnotation}} -->
-										<!-- {{annotation}} -->
-										<!-- {{getimageIndexId . image_url}} {{> annotateTemplate}} -->
 									{{/if}}
-									<!-- {{#if isAnnotated}}
-										{{getAnnotation . annotation}} {{> annotate}}
-									{{/if}} -->
 								</div>
 							{{#if labels}}
 								<div class="image-labels">
@@ -115,10 +109,11 @@
 			{{#if video_url}}
 				{{#unless collapsed}}
 					<div class="attachment-video">
-						<video controls class="inline-video">
+						<a class="icon-play testVideo" data-id="{{getvideoId}}">Play Video</a>
+						<!-- <video controls class="inline-video">
 							<source src="{{fixCordova video_url}}" type="{{video_type}}" data-description="{{description}}">
 							Your browser does not support the video element.
-						</video>
+						</video> -->
 					</div>
 				{{/unless}}
 			{{/if}}

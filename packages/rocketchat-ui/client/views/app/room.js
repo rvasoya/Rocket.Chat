@@ -389,6 +389,12 @@ Template.room.helpers({
 		if (RoomRoles.findOne({ rid: this._id, roles: 'leader', 'u._id': { $ne: Meteor.userId() } }, { fields: { _id: 1 } })) {
 			return 'has-leader';
 		}
+	},
+	loadVideo() {
+		return Template.instance().videoTemplate.get();
+	},
+	loadVideoData() {
+		return Template.instance().videoTemplateData.get();
 	}
 });
 
@@ -399,6 +405,22 @@ let lastTouchY = null;
 let lastScrollTop;
 
 Template.room.events({
+	'click .testVideo'(e, instance){
+		Meteor.call('getVideo',$(e.currentTarget).attr('data-id'),(err,result)=>{
+			if(err)
+				return console.log(err);
+			else{
+				instance.videoTemplate.set('renderVideo')
+				instance.videoTemplateData.set(result);
+			}
+		});
+	},
+	'click .annotate'(e){
+		AnnotationHistoryManager.getSurroundingMessages({
+			_id: $(e.currentTarget).attr('data-id'),
+			rid:Session.get('openedRoom')
+		}, 50)
+	},
 	'click .iframe-toolbar button'() {
 		fireGlobalEvent('click-toolbar-button', { id: this.id });
 	},
@@ -697,6 +719,8 @@ Template.room.events({
 
 
 Template.room.onCreated(function() {
+	this.videoTemplate = new ReactiveVar();
+	this.videoTemplateData = new ReactiveVar();
 	// this.scrollOnBottom = true
 	// this.typing = new msgTyping this.data._id
 	this.showUsersOffline = new ReactiveVar(false);

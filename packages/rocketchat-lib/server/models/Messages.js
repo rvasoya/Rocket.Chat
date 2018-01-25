@@ -377,6 +377,19 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base {
 		return this.update(query, update);
 	}
 
+	setAnnotation(_id, aId){
+		const query = {_id}
+		const update = {
+			$push :{
+				annotation : aId
+			},
+			$set:{
+				isAnnotated : true
+			}
+		}
+		return this.update(query, update)
+	}
+
 	setAnnotationByIdAndAnnotation(_id, annotation) {
 		const query =	{_id};
 

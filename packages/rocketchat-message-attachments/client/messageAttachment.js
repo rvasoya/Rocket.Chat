@@ -33,11 +33,13 @@ Template.messageAttachment.helpers({
 			return this.image_url.replace('/file-upload/','').split('/')[0]
 		}
 	},
+	getvideoId() {
+		if (this.video_url && this.video_url.indexOf('/file-upload/') === 0) {
+			return this.video_url.replace('/file-upload/','').split('/')[0]
+		}
+	},
 	getimageIndexId(data, url){
 		data._id = url.replace('/file-upload/','').split('/')[0]
-	},
-	getAnnotation(){
-		console.log(this);
 	},
 	parsedText() {
 		return renderMessageBody({
@@ -87,11 +89,3 @@ Template.messageAttachment.helpers({
 		return this.type === 'file';
 	}
 });
-
-$(document).on('click','.annotate',(e)=>{
-	// console.log($(e.currentTarget).attr('data-id'));
-	AnnotationHistoryManager.getSurroundingMessages({
-		_id: $(e.currentTarget).attr('data-id'),
-		rid:Session.get('openedRoom')
-	}, 50)
-})

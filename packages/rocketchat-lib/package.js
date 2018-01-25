@@ -110,6 +110,7 @@ Package.onUse(function(api) {
 
 	// SERVER MODELS
 	api.addFiles('server/models/_Base.js', 'server');
+	api.addFiles('server/models/Annotation.js', 'server');
 	api.addFiles('server/models/Avatars.js', 'server');
 	api.addFiles('server/models/Messages.js', 'server');
 	api.addFiles('server/models/Reports.js', 'server');

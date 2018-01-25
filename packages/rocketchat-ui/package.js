@@ -58,6 +58,7 @@ Package.onUse(function(api) {
 	api.addFiles('client/lib/sideNav.js', 'client');
 	api.addFiles('client/lib/tapi18n.js', 'client');
 	api.addFiles('client/lib/textarea-autogrow.js', 'client');
+	api.addFiles('client/lib/video.js', 'client');
 
 	api.addFiles('client/lib/codeMirror/codeMirror.js', 'client');
 

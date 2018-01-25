@@ -1,0 +1,48 @@
+<template name="renderVideo">
+  <div id="videojsload" class="mfp-hide" video-id="{{videoId}}">
+    <div class="video-container">
+      <video class="video-js vjs-big-play-centered" id="videohaha" controls>
+        <source src="{{video_url}}" type="{{video_type}}" data-description="{{description}}"/>
+          <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+      </video>
+    </div>
+    <div class="rc-old">
+      <div class="flex-tab">
+        <div class="content flex-tab__content">
+          <div class="list-view flex-tab__header">
+            <div class="title">
+              <h2>Annotation</h2>
+            </div>
+          </div>
+          {{> annotationTemplateVideo}}
+      </div>
+      </div>
+    </div>
+  </div>
+</template>
+<template name="annotationTemplateVideo">
+  <div class="flex-tab__result js-list" data-template="annotationTemplateVideo">
+    {{#if isAnnotated}}
+    <ul class="list clearfix">
+    {{#each item in annotation}}
+      <li class="annotation-message message background-transparent-dark-hover" data-id="{{item._id}}" data-mid="{{item.mid}}" data-seek="{{item.pos.time}}">
+        <button class="thumb user-card-message" data-username="{{item.username}}" tabindex="1">{{> avatar username=item.username}}</button>
+        <!-- user name -->
+        <button type="button" class="user user-card-message color-primary-font-color" data-username="{{item.username}}" tabindex="1">
+          {{item.username}}
+        </button>
+        <span class="info border-component-color color-info-font-color">
+          <span class="time" title='{{date item.at}} {{time item.at}}'>{{date item.at}}</span>
+        </span>
+        <!-- annotation text -->
+        <div class="body color-primary-font-color">
+        {{item.review}}
+        </div>
+      </li>
+    {{/each}}
+    </ul>
+    {{else}}
+    <h2>No Annotation</h2>
+    {{/if}}
+  </div>
+</template>

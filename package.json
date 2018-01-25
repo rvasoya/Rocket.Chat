@@ -119,6 +119,7 @@
     "imap": "^0.8.19",
     "jquery": "^3.2.1",
     "ldapjs": "^1.0.1",
+    "magnific-popup": "^1.1.0",
     "mailparser-node4": "^2.0.2-2",
     "mime-db": "^1.31.0",
     "mime-type": "^3.0.5",
@@ -132,6 +133,7 @@
     "toastr": "^2.1.2",
     "underscore": "^1.8.3",
     "underscore.string": "^3.3.4",
+    "video.js": "^6.6.0",
     "wolfy87-eventemitter": "^5.2.3"
   }
 }
