@@ -47,6 +47,10 @@ Meteor.methods({
 			attachment.video_url = fileUrl;
 			attachment.video_type = file.type;
 			attachment.video_size = file.size;
+		} else if (/^application\/pdf/.test(file.type)) {
+			attachment.pdf_url = fileUrl;
+			attachment.pdf_type = file.type;
+			attachment.pdf_size = file.size;
 		}
 
 		const user = Meteor.user();

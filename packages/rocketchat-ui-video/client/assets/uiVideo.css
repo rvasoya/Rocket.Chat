@@ -6,9 +6,10 @@
   width: 70%;
 }
 .mfp-content .rc-old{
-  width: 25%;
-  height: 410px;
-  overflow-y: hidden;
+  width: 30%;
+  max-height: 410px;
+  overflow-y: auto;
+  margin: 0 auto;
 }
 .mfp-content .rc-old .flex-tab__result{
   height: 330px;

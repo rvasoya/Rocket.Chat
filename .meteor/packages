@@ -136,6 +136,7 @@ rocketchat:ui-flextab
 rocketchat:ui-login
 rocketchat:ui-master
 rocketchat:ui-message
+rocketchat:ui-pdf
 rocketchat:ui-sidenav
 rocketchat:ui-vrecord
 rocketchat:ui-video

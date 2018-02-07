@@ -125,6 +125,7 @@
     "mime-type": "^3.0.5",
     "moment": "^2.19.1",
     "moment-timezone": "^0.5.14",
+    "pdfjs-dist": "^2.0.332",
     "photoswipe": "^4.1.2",
     "poplib": "^0.1.7",
     "prom-client": "^10.2.2",
@@ -133,7 +134,7 @@
     "toastr": "^2.1.2",
     "underscore": "^1.8.3",
     "underscore.string": "^3.3.4",
-    "video.js": "^6.6.0",
+    "video.js": "^6.6.3",
     "wolfy87-eventemitter": "^5.2.3"
   }
 }

@@ -395,6 +395,12 @@ Template.room.helpers({
 	},
 	loadVideoData() {
 		return Template.instance().videoTemplateData.get();
+	},
+	loadPdf() {
+		return Template.instance().pdfTemplate.get();
+	},
+	loadPdfData() {
+		return Template.instance().pdfTemplateData.get();
 	}
 });
 
@@ -405,6 +411,16 @@ let lastTouchY = null;
 let lastScrollTop;
 
 Template.room.events({
+	'click .openPDF'(e, instance){
+		Meteor.call('getPDF',$(e.currentTarget).attr('data-id'),(err,result)=>{
+			if(err)
+				return console.log(err);
+			else{
+				instance.pdfTemplate.set('renderPdf')
+				instance.pdfTemplateData.set(result);
+			}
+		});
+	},
 	'click .testVideo'(e, instance){
 		Meteor.call('getVideo',$(e.currentTarget).attr('data-id'),(err,result)=>{
 			if(err)
@@ -721,6 +737,9 @@ Template.room.events({
 Template.room.onCreated(function() {
 	this.videoTemplate = new ReactiveVar();
 	this.videoTemplateData = new ReactiveVar();
+
+	this.pdfTemplate = new ReactiveVar();
+	this.pdfTemplateData = new ReactiveVar();
 	// this.scrollOnBottom = true
 	// this.typing = new msgTyping this.data._id
 	this.showUsersOffline = new ReactiveVar(false);

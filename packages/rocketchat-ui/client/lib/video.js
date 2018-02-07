@@ -1,4 +1,4 @@
-import videojs from 'video.js/dist/video.js';
+import videojs from 'video.js';
 
 const Plugin = videojs.getPlugin('plugin');
 const Component = videojs.getComponent('Component');

@@ -38,6 +38,11 @@ Template.messageAttachment.helpers({
 			return this.video_url.replace('/file-upload/','').split('/')[0]
 		}
 	},
+	getPdfId() {
+		if (this.pdf_url && this.pdf_url.indexOf('/file-upload/') === 0) {
+			return this.pdf_url.replace('/file-upload/','').split('/')[0]
+		}
+	},
 	getimageIndexId(data, url){
 		data._id = url.replace('/file-upload/','').split('/')[0]
 	},

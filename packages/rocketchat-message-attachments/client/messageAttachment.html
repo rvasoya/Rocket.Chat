@@ -110,10 +110,14 @@
 				{{#unless collapsed}}
 					<div class="attachment-video">
 						<a class="icon-play testVideo" data-id="{{getvideoId}}">Play Video</a>
-						<!-- <video controls class="inline-video">
-							<source src="{{fixCordova video_url}}" type="{{video_type}}" data-description="{{description}}">
-							Your browser does not support the video element.
-						</video> -->
+					</div>
+				{{/unless}}
+			{{/if}}
+
+			{{#if pdf_url}}
+				{{#unless collapsed}}
+					<div class="attachment-pdf">
+						<a class="icon-play openPDF" data-id="{{getPdfId}}">Open PDF</a>
 					</div>
 				{{/unless}}
 			{{/if}}

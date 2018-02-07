@@ -30,21 +30,21 @@ FileUpload = {
 			throw new Meteor.Error('error-direct-message-file-upload-not-allowed', reason);
 		}
 
-		// if (file.size > maxFileSize) {
-		// 	const reason = TAPi18n.__('File_exceeds_allowed_size_of_bytes', {
-		// 		size: filesize(maxFileSize)
-		// 	}, user.language);
-		// 	throw new Meteor.Error('error-file-too-large', reason);
-		// }
-    //
-		// if (parseInt(maxFileSize) > 0) {
-		// 	if (file.size > maxFileSize) {
-		// 		const reason = TAPi18n.__('File_exceeds_allowed_size_of_bytes', {
-		// 			size: filesize(maxFileSize)
-		// 		}, user.language);
-		// 		throw new Meteor.Error('error-file-too-large', reason);
-		// 	}
-		// }
+		if (file.size > maxFileSize) {
+			const reason = TAPi18n.__('File_exceeds_allowed_size_of_bytes', {
+				size: filesize(maxFileSize)
+			}, user.language);
+			throw new Meteor.Error('error-file-too-large', reason);
+		}
+
+		if (parseInt(maxFileSize) > 0) {
+			if (file.size > maxFileSize) {
+				const reason = TAPi18n.__('File_exceeds_allowed_size_of_bytes', {
+					size: filesize(maxFileSize)
+				}, user.language);
+				throw new Meteor.Error('error-file-too-large', reason);
+			}
+		}
 
 		if (!RocketChat.fileUploadIsValidContentType(file.type)) {
 			const reason = TAPi18n.__('File_type_is_not_accepted', user.language);
@@ -56,6 +56,5 @@ FileUpload = {
 };
 
 RocketChat.settings.get('FileUpload_MaxFileSize', function(key, value) {
-	console.log('===>',key,value);
 	maxFileSize = value;
 });

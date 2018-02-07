@@ -1,0 +1,56 @@
+<template name="renderPdf">
+  <div id="pdfload" class="content-background-color" data-url="{{pdf_url}}" data-id="{{pdfId}}">
+    <div class="pdf-container">
+      <div class="pdf-wrapper">
+        <div class="pdf-canvas-container">
+          {{#if isAnnotated}}
+            {{#each annotation}}
+              <div class="pdf-annotation" data-id="{{_id}}" data-page="{{pos.page}}" style="top:{{pos.y}}%;left:{{pos.x}}%" title="{{review}}"></div>
+            {{/each}}
+          {{/if}}
+        </div>
+      </div>
+      <div class="pdf-meta">
+        <button class="pdf-prev rc-button rc-button--primary" data-go="prev">Previous</button>
+        <button class="pdf-next rc-button rc-button--primary" data-go="next">Next</button>
+        <div class="secondary-background-color pdf-page-number">Page <span class="pdf-current-page">{{currentPage}}</span> of <span id="pdf-total-pages">{{totalPage}}</span></div>
+      </div>
+    </div>
+    <div class="rc-old">
+      <div class="flex-tab">
+        <div class="content flex-tab__content">
+          <div class="list-view flex-tab__header">
+            <div class="title">
+              <h2>Annotation</h2>
+            </div>
+          </div>
+          {{> annotationTemplatePdf}}
+      </div>
+      </div>
+    </div>
+  </div>
+</template>
+<template name="annotationTemplatePdf">
+  <div class="flex-tab__result js-list" data-template="annotationTemplatePdf">
+    {{#if isAnnotated}}
+    <ul class="list clearfix">
+    {{#each item in annotation}}
+      <li class="annotation-message message background-transparent-dark-hover" data-id="{{item._id}}" data-mid="{{item.mid}}" data-go="{{item.pos.page}}">
+        <button class="thumb user-card-message" data-username="{{item.username}}" tabindex="1">{{> avatar username=item.username}}</button>
+        <button type="button" class="user user-card-message color-primary-font-color" data-username="{{item.username}}" tabindex="1">
+          {{item.username}}
+        </button>
+        <span class="info border-component-color color-info-font-color">
+          <span class="time" title='{{date item.at}} {{time item.at}}'>{{date item.at}}</span>
+        </span>
+        <div class="body color-primary-font-color">
+        {{item.review}}
+        </div>
+      </li>
+    {{/each}}
+    </ul>
+    {{else}}
+    <h2>No Annotation</h2>
+    {{/if}}
+  </div>
+</template>

@@ -2,27 +2,6 @@
 import _ from 'underscore';
 import moment from 'moment';
 
-Meteor.startup(function() {
-	RocketChat.MessageAction.addButton({
-		id: 'jump-to-annotation',
-		icon: 'jump',
-		label: "Jump_to_message",
-		context: ['annotation'],
-		action() {
-			console.log('jump to annotation');
-			// const message = this._arguments[1];
-			// if (window.matchMedia('(max-width: 500px)').matches) {
-			// 	Template.instance().tabBar.close();
-			// }
-			//
-			// RoomHistoryManager.getSurroundingMessages(message, 50);
-		},
-		group: 'menu'
-	});
-
-});
-
-
 Template.annotationTemplate.helpers({
 	time(ts) {
 		return moment(ts).format(RocketChat.settings.get('Message_TimeFormat'));
@@ -49,18 +28,15 @@ Template.annotationTemplate.helpers({
 
 Template.annotationTemplate.onCreated(function() {
 	this.hasMore = new ReactiveVar(true);
-	this.limit = new ReactiveVar(50);
+	this.limit = new ReactiveVar(10);
 	return this.autorun(() => {
 		const data = Template.currentData();
 		return this.subscribe('annotationMessage', data.rid, this.limit.get(), () => {
 			if (AnnotationMessage.find({
-				rid: data.rid
-			}).count() < this.limit.get()) {
-				console.log(this.limit.get());
-				return this.hasMore.set(false);
-			}
-			else{
-				console.log(this.limit.get());
+							rid:Session.get('openedRoom')
+						},{
+							sort:{at : -1}
+						}).count() < this.limit.get()) {
 				return this.hasMore.set(false);
 			}
 		});
@@ -71,7 +47,7 @@ Template.annotationTemplate.events({
 	'scroll .js-list': _.throttle(function(e, instance) {
 		if (e.target.scrollTop >= e.target.scrollHeight - e.target.clientHeight && instance.hasMore.get()) {
 			console.log('get more annotation...');
-			return instance.limit.set(instance.limit.get() + 1);
+			return instance.limit.set(instance.limit.get() + 10);
 		}
 	}, 200),
 
