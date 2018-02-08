@@ -56,7 +56,7 @@ Package.onUse(function(api) {
 	api.addFiles('lib/getValidRoomName.js');
 	api.addFiles('lib/placeholders.js');
 	api.addFiles('lib/promises.js');
-	api.addFiles('lib/roomTypesCommon.js');
+	api.addFiles('lib/RoomTypesCommon.js');
 	api.addFiles('lib/slashCommand.js');
 	api.addFiles('lib/Message.js');
 	api.addFiles('lib/messageBox.js');
