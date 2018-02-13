@@ -1,5 +1,5 @@
 import _ from 'underscore';
-import roomTypesCommon from '../../lib/roomTypesCommon';
+import roomTypesCommon from '../../lib/RoomTypesCommon';
 
 RocketChat.roomTypes = new class extends roomTypesCommon {
 	checkCondition(roomType) {
