@@ -86,6 +86,30 @@ html.rtl .attachment {
 
 		& .annotation{
 			position: relative;
+
+			& .annotate{
+				background-color: transparent;
+				position: absolute;
+				width: 1em;
+				height: 1em;
+				cursor: pointer;
+				border: 3px solid yellow;
+				border-radius: 50%;
+			}
+
+			& .annotate.highlight{
+				border-color : red;
+			}
+
+			& .annotate:hover{
+				border-color : red;
+			}
+			& .annotate:focus{
+				border-color : red;
+			}
+			& .annotate:active{
+				border-color : red;
+			}
 		}
 
 	}

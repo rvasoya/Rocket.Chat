@@ -29,8 +29,6 @@ export const AnnotationHistoryManager = new class {
 			});
 
 			return setTimeout(() => msgElement.removeClass('highlight'), 2500);
-		} else {
-      console.log('annotation may be is in history....');
 		}
   }
 	goToAnnotation(aId) {
