@@ -175,7 +175,7 @@ rocketchat:mapview@0.0.1
 rocketchat:markdown@0.0.2
 rocketchat:mentions@0.0.1
 rocketchat:mentions-flextab@0.0.1
-rocketchat:message-annotation@0.0.1
+rocketchat:message-annotation@1.0.0
 rocketchat:message-attachments@0.0.1
 rocketchat:message-mark-as-unread@0.0.1
 rocketchat:message-pin@0.0.1

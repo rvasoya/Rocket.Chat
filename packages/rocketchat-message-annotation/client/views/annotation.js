@@ -46,7 +46,6 @@ Template.annotationTemplate.onCreated(function() {
 Template.annotationTemplate.events({
 	'scroll .js-list': _.throttle(function(e, instance) {
 		if (e.target.scrollTop >= e.target.scrollHeight - e.target.clientHeight && instance.hasMore.get()) {
-			console.log('get more annotation...');
 			return instance.limit.set(instance.limit.get() + 10);
 		}
 	}, 200),

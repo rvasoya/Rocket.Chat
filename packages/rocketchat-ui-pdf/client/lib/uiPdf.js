@@ -209,12 +209,10 @@ $('body').on('click','.pdf-next ,.pdf-prev',function(){
 	let op = $(this).data('go')
 	let current = instance.currentPage.get()
 	if(op == 'next'){
-		console.log('go next');
 		if(current != instance.totalPage.get())
       showPage(instance,++current);
 	}
 	else{
-		console.log('go back');
 		if(current != 1)
       showPage(instance,--current);
 	}

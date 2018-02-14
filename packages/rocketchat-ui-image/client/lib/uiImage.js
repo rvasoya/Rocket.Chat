@@ -46,7 +46,6 @@ Template.renderImage.helpers({
 Template.renderImage.onCreated(function(){
   let template = this;
 	let data = Template.currentData();
-	console.log(data);
 	this.isAnnotated = new ReactiveVar(data.isAnnotated ? data.isAnnotated : false)
 	this.annotation = new ReactiveVar(data.isAnnotated ? data.annotation : [])
 })
@@ -81,15 +80,13 @@ $('body').on('click','#imageload .image-container img',function(e){
 	let x = originalEvent.clientX - rect.left-5;
 	let y = originalEvent.clientY - rect.top-5;
 	let instance = Blaze.getView($(this)[0]).templateInstance()
-	let Ob ={
+	Meteor.call('createImageAnnotation',{
 		review :text,
 		i : target.src.split('/')[4],
 		x : ( x/rect.width * 100),
 		y : ( y/rect.height * 100),
 		rid : Session.get('openedRoom')
-	}
-	console.log(Ob);
-	Meteor.call('createImageAnnotation',Ob,(err,result)=>{
+	},(err,result)=>{
 		if(err)
 			return console.log(err);
 		if(result){

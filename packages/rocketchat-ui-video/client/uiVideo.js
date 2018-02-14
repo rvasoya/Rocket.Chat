@@ -95,7 +95,6 @@ Template.renderVideo.onRendered(() =>{
 	$('body').on('click','video.vjs-tech',function(e){
 		let player = videojs.players.videohaha
     if(player.currentTime() < 0.5){
-      console.log("don't allow annotaiton...");
       return ;
     }
 		player.pause()

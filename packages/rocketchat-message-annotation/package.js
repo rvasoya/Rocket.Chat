@@ -1,7 +1,7 @@
 Package.describe({
 	name: 'rocketchat:message-annotation',
-	version: '0.0.1',
-	summary: 'Annotation Messages'
+	version: '1.0.0',
+	summary: 'Annotation Messages listing in sideBox'
 });
 
 Package.onUse(function(api) {
@@ -14,7 +14,6 @@ Package.onUse(function(api) {
 
 	api.addFiles([
 		'client/lib/annotationMessage.js',
-		'client/actionButton.js',
 		'client/tabBar.js',
 		'client/views/annotation.html',
 		'client/views/annotation.js',
@@ -23,8 +22,7 @@ Package.onUse(function(api) {
 
 	api.addFiles([
 		'server/publications/annotationMessage.js',
-		'server/settings.js',
-		'server/annotationMessage.js'
+		'server/settings.js'
 	],'server')
 
 });

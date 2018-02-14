@@ -3,7 +3,7 @@ Meteor.startup(function() {
 		if (RocketChat.settings.get('Message_AllowAnnotation')) {
 			RocketChat.TabBar.addButton({
 				groups: ['channel', 'group', 'direct'],
-					id: 'messages-annotation',
+				id: 'messages-annotation',
 				i18nTitle: 'Messages Annotation',
 				icon: 'pin',
 				template: 'annotationTemplate',

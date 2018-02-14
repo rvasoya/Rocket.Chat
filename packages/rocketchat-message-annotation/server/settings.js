@@ -6,7 +6,7 @@ Meteor.startup(function() {
 	});
 	return RocketChat.models.Permissions.upsert('Message_AllowAnnotation', {
 		$setOnInsert: {
-			roles: ['owner', 'moderator', 'admin']
+			roles: ['owner', 'moderator', 'admin', 'user']
 		}
 	});
 });

@@ -23,14 +23,6 @@ Meteor.methods({
 		}
 
 		const me = RocketChat.models.Users.findOneById(Meteor.userId());
-		// //0 = image, 1 = video, 2 = docs
-		// RocketChat.models.Annotation.createAnnotation(1,
-		// 	 annotation.rid,//roomId
-		// 	 annotation.i,//fileId
-		// 	 {	_id : Meteor.userId(),
-	 	// 			username : Meteor.user().username},//User
-		// 	annotation.review,//message of annotation
-		// 	annotation.pos)//pos of cursor with time,per,x,y {
 
 		annotation._id = Random.id()
 		annotation.at = new Date
@@ -39,7 +31,6 @@ Meteor.methods({
 		annotation.mid = originalMessage._id
 
 		RocketChat.models.Messages.setAnnotationByIdAndAnnotation(originalMessage._id, annotation);
-		// return RocketChat.models.Messages.setAnnotationByIdAndAnnotation(originalMessage._id, originalMessage.annotation);
 		return RocketChat.models.Messages.getMessageByFileId(annotation.i);
 	}
 });
