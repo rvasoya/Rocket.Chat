@@ -176,8 +176,8 @@ $('body').on('click','#pdf-canvas',function(e){
 		 return ;
 	 else if(text.length==0)
 		 return ;
-	 let originalEvent = event;
-	 let target = event.target;
+	 let originalEvent = e;
+	 let target = e.target;
 	 let rect = target.getBoundingClientRect();
 	 let x = originalEvent.clientX - rect.left-5;
 	 let y = originalEvent.clientY - rect.top-5;
