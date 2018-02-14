@@ -89,7 +89,6 @@ rocketchat:mapview
 rocketchat:markdown
 rocketchat:mentions
 rocketchat:mentions-flextab
-rocketchat:mannotate
 rocketchat:message-annotation
 rocketchat:message-attachments
 rocketchat:message-mark-as-unread
@@ -133,6 +132,7 @@ rocketchat:ui
 rocketchat:ui-account
 rocketchat:ui-admin
 rocketchat:ui-flextab
+rocketchat:ui-image
 rocketchat:ui-login
 rocketchat:ui-master
 rocketchat:ui-message

@@ -1,0 +1,39 @@
+#imageload{
+  display: flex;
+  flex-direction: row;
+}
+.mfp-content #imageload  .rc-old,#imageload .image-container{
+  margin: 15px auto;
+}
+#imageload .image-container{
+  max-width: 650px;
+  text-align: center;
+}
+.image-wrapper{
+  position: relative;
+}
+.image-wrapper img{
+  max-height: 500px;
+  max-width: 650px;
+}
+.image-annotation{
+  position: absolute;
+  background-color: transparent;
+  border: 3px solid yellow;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 1.5em;
+  height: 1.5em;
+  margin-top: -10px;
+  margin-left: -5px;
+}
+ .image-annotation:hover,.image-annotation:focus,.image-annotation.highlight{
+   border-color:orangered;
+   background-color: rgba(255,255,255,0.5)
+ }
+ .mfp-content #imageload .rc-old .flex-tab__result {
+     height: 400px;
+ }
+ .mfp-content #imageload .rc-old {
+   max-height: 500px;
+ }

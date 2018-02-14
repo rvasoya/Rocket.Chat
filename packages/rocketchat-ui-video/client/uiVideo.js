@@ -85,11 +85,14 @@ Template.renderVideo.onRendered(() =>{
 	$('body').on('click','.vjs-annotation-line',function(){
 		//seek to player...
 		videojs.players.videohaha.currentTime($(this).data('sid'))
+		let msgEl = $(`.vjs-annotation[data-aid='${$(this).data('aid')}']`)
+		msgEl.addClass('highlight')
+		setTimeout(()=>{
+			msgEl.removeClass('highlight')
+		},3000)
 	})
 
 	$('body').on('click','video.vjs-tech',function(e){
-		let renderVideo = Blaze.getView($('#videohaha')[0]).templateInstance().data.annotation
-		let annotationList = Blaze.getView($('[data-template="annotationTemplateVideo"]')[0]).templateInstance()
 		let player = videojs.players.videohaha
     if(player.currentTime() < 0.5){
       console.log("don't allow annotaiton...");
@@ -97,48 +100,50 @@ Template.renderVideo.onRendered(() =>{
     }
 		player.pause()
     var text = prompt('Enter message....')
-    if(text==null)
-      return ;
-    else if(text.length==0)
-      return ;
-	    let originalEvent = event;
-	    let target = event.target;
-	    let rect = target.getBoundingClientRect();
-			Meteor.call('createVideoAnnotation',{
-	    	review:text,
-				i : $('#videojsload').attr('video-id'),
-				rid:Session.get('openedRoom'),
-	      pos:{
-	        x : ((originalEvent.clientX - rect.left) / rect.width * 100)-1.3,
-	        y : ((originalEvent.clientY - rect.top) / rect.height * 100)-2.5,
-	        bar: (player.currentTime()/player.duration())*100,
-	        time: player.currentTime()
-	      }
-	    },(err,result)=>{
-				if(err)
-					return console.log(err);
-				if(result){
-					renderVideo = result.annotation;
-					Blaze.getView($('#videohaha')[0]).templateInstance().data = result
-					annotationList.annotation.set(result.annotation.reverse())
-					annotationList.isAnnotated.set(result.isAnnotated)
-					player.annotationLine.dispose()
-					player.annotationLine = player.addChild('AnnotationDot',{
-						annotation: renderVideo
+    if(text==null || text.length==0){
+			player.play()
+			return ;
+		}
+    let originalEvent = e;
+    let target = e.target;
+    let rect = target.getBoundingClientRect();
+		Meteor.call('createVideoAnnotation',{
+    	review:text,
+			i : $('#videojsload').attr('video-id'),
+			rid:Session.get('openedRoom'),
+      pos:{
+        x : ((originalEvent.clientX - rect.left) / rect.width * 100)-1.3,
+        y : ((originalEvent.clientY - rect.top) / rect.height * 100)-2.5,
+        bar: (player.currentTime()/player.duration())*100,
+        time: player.currentTime()
+      }
+    },(err,result)=>{
+			if(err)
+				return console.log(err);
+			if(result){
+				let renderVideo = Blaze.getView($('#videohaha')[0]).templateInstance().data.annotation
+				let annotationList = Blaze.getView($('[data-template="annotationTemplateVideo"]')[0]).templateInstance()
+				renderVideo = result.annotation;
+				Blaze.getView($('#videohaha')[0]).templateInstance().data = result
+				annotationList.annotation.set(result.annotation.reverse())
+				annotationList.isAnnotated.set(result.isAnnotated)
+				player.annotationLine.dispose()
+				player.annotationLine = player.addChild('AnnotationDot',{
+					annotation: renderVideo
+				})
+				player.annotationCircle.dispose()
+				player.annotationCircle = player.addChild('AnnotationCircle',{
+					annotation: renderVideo
+				})
+				player.advanced().dispose()
+				player.advanced({
+					timeInterval : renderVideo.map(n=>{
+						n.pos.id = n._id
+						return n.pos
 					})
-					player.annotationCircle.dispose()
-					player.annotationCircle = player.addChild('AnnotationCircle',{
-						annotation: renderVideo
-					})
-					player.advanced().dispose()
-					player.advanced({
-						timeInterval : renderVideo.map(n=>{
-							n.pos.id = n._id
-							return n.pos
-						})
-					})
-				}
-			})
+				})
+			}
+		})
   })
 
 
@@ -172,6 +177,6 @@ Template.annotationTemplateVideo.events({
 		msgEl.addClass('highlight')
 		setTimeout(()=>{
 			msgEl.removeClass('highlight')
-		},1500)
+		},3000)
 	}
 })

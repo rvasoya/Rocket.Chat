@@ -67,7 +67,7 @@
 					{{#if loadImage}}
 						<figure>
 								<div class="annotation inline-image" data-id="{{getimageId}}" style="background-image: url('{{fixCordova image_url}}');">
-									<img src="{{fixCordova image_url}}" height="{{getImageHeight image_dimensions.height}}" class="gallery-item" id="{{getimageId}}" data-title="{{title}}" data-description="{{description}}">
+									<img src="{{fixCordova image_url}}" height="{{getImageHeight image_dimensions.height}}" class="openImage" data-id="{{getimageId}}" data-title="{{title}}" data-description="{{description}}">
 									{{#if isAnnotated}}
 										{{#each item in annotation}}
 											<div class="annotate" data-id="{{item._id}}" style="top:{{item.y}}%;left:{{item.x}}%"></div>
@@ -109,7 +109,7 @@
 			{{#if video_url}}
 				{{#unless collapsed}}
 					<div class="attachment-video">
-						<a class="icon-play testVideo" data-id="{{getvideoId}}">Play Video</a>
+						<a class="icon-play openVideo" data-id="{{getvideoId}}">Play Video</a>
 					</div>
 				{{/unless}}
 			{{/if}}

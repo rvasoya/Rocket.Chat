@@ -46,7 +46,8 @@ class AnnotationDot extends Component{
           className:'vjs-annotation-line'
         })
         temp.style.left = item.pos.bar+'%';
-        temp.setAttribute('data-mid',item.pos.mid)
+        temp.setAttribute('data-mid',item.mid)
+        temp.setAttribute('data-aid',item._id)
         temp.setAttribute('data-sid',item.pos.time)
         videojs.dom.prependTo(temp,el);
       })

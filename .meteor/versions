@@ -171,7 +171,6 @@ rocketchat:livechat@0.0.1
 rocketchat:logger@0.0.1
 rocketchat:login-token@1.0.0
 rocketchat:mailer@0.0.1
-rocketchat:mannotate@0.0.1
 rocketchat:mapview@0.0.1
 rocketchat:markdown@0.0.2
 rocketchat:mentions@0.0.1
@@ -222,6 +221,7 @@ rocketchat:ui-account@0.1.0
 rocketchat:ui-admin@0.1.0
 rocketchat:ui-flextab@0.1.0
 rocketchat:ui-login@0.1.0
+rocketchat:ui-image@1.0.0
 rocketchat:ui-master@0.1.0
 rocketchat:ui-message@0.1.0
 rocketchat:ui-pdf@1.0.0

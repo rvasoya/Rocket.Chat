@@ -401,6 +401,12 @@ Template.room.helpers({
 	},
 	loadPdfData() {
 		return Template.instance().pdfTemplateData.get();
+	},
+	loadImage(){
+		return Template.instance().imageTemplate.get();
+	},
+	loadImageData(){
+		return Template.instance().imageTemplateData.get();
 	}
 });
 
@@ -411,6 +417,16 @@ let lastTouchY = null;
 let lastScrollTop;
 
 Template.room.events({
+	'click .openImage'(e, instance){
+		Meteor.call('getImage',$(e.currentTarget).attr('data-id'),(err,result)=>{
+			if(err)
+				return console.log(err);
+			else{
+				instance.imageTemplate.set('renderImage')
+				instance.imageTemplateData.set(result);
+			}
+		});
+	},
 	'click .openPDF'(e, instance){
 		Meteor.call('getPDF',$(e.currentTarget).attr('data-id'),(err,result)=>{
 			if(err)
@@ -421,7 +437,7 @@ Template.room.events({
 			}
 		});
 	},
-	'click .testVideo'(e, instance){
+	'click .openVideo'(e, instance){
 		Meteor.call('getVideo',$(e.currentTarget).attr('data-id'),(err,result)=>{
 			if(err)
 				return console.log(err);
@@ -735,6 +751,9 @@ Template.room.events({
 
 
 Template.room.onCreated(function() {
+	this.imageTemplate = new ReactiveVar();
+	this.imageTemplateData = new ReactiveVar();
+
 	this.videoTemplate = new ReactiveVar();
 	this.videoTemplateData = new ReactiveVar();
 

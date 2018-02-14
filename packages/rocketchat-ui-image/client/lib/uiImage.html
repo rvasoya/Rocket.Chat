@@ -1,0 +1,50 @@
+<template name="renderImage">
+  <div id="imageload" class="content-background-color" data-url="{image_url}}" data-id="{{imageId}}">
+    <div class="image-container">
+      <div class="image-wrapper">
+        <img src="{{image_url}}" height="{{image_dimensions.height}}" data-id="{{imageId}}" data-description="{{description}}">
+          {{#if isAnnotated}}
+            {{#each annotation}}
+            <div class="image-annotation" data-id="{{_id}}" style="top:{{y}}%;left:{{x}}%" title="{{review}}"></div>
+            {{/each}}
+          {{/if}}
+      </div>
+    </div>
+    <div class="rc-old">
+      <div class="flex-tab">
+        <div class="content flex-tab__content">
+          <div class="list-view flex-tab__header">
+            <div class="title">
+              <h2>Annotation</h2>
+            </div>
+          </div>
+          {{> annotationTemplateImage}}
+      </div>
+      </div>
+    </div>
+  </div>
+</template>
+<template name="annotationTemplateImage">
+  <div class="flex-tab__result js-list" data-template="annotationTemplateImage">
+    {{#if isAnnotated}}
+    <ul class="list clearfix">
+    {{#each item in annotation}}
+      <li class="annotation-message message background-transparent-dark-hover" data-id="{{item._id}}" data-mid="{{item.mid}}">
+        <button class="thumb user-card-message" data-username="{{item.username}}" tabindex="1">{{> avatar username=item.username}}</button>
+        <button type="button" class="user user-card-message color-primary-font-color" data-username="{{item.username}}" tabindex="1">
+          {{item.username}}
+        </button>
+        <span class="info border-component-color color-info-font-color">
+          <span class="time" title='{{date item.at}} {{time item.at}}'>{{date item.at}}</span>
+        </span>
+        <div class="body color-primary-font-color">
+        {{item.review}}
+        </div>
+      </li>
+    {{/each}}
+    </ul>
+    {{else}}
+    <h2>No Annotation</h2>
+    {{/if}}
+  </div>
+</template>

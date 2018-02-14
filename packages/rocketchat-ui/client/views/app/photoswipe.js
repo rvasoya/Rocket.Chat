@@ -84,56 +84,6 @@ Template.photoswipe.helpers({
 		}
 	}
 })
-Template.photoswipe.events({
-
-	'click .pswp__img'(event) {
-		let target = event.target || event.srcElement;
-		let rect = target.getBoundingClientRect();
-		let originalEvent = event;
-		let x = (originalEvent.clientX - rect.left) / rect.width * 100;
-		let y = (originalEvent.clientY - rect.top) / rect.height * 100;
-		let marker = {
-			i : target.src.split('/')[4],
-			x : x-4,
-			y : y-4,
-			rid : Session.get('openedRoom')
-		}
-		// console.log(marker);
-		swal({
-			title:'Add content',
-			text: 'annotation text',
-			type: 'input',
-			showCancelButton: true,
-			closeOnConfirm: false,
-			confirmButtonText: t('Submit'),
-			cancelButtonText: t('Cancel')
-		},(text) => {
-			if (text === false) {
-				return false;
-			}
-			if (text === '') {
-				swal.showInputError('You need to write something!');
-				return false;
-			}
-				marker.review = text
-				//call method
-				Meteor.call('createAnnotation',marker,(err,result)=>{
-					if(err)
-						return console.log(err);
-					if(result){
-						galleryInstance.close()
-						swal({
-							title: 'Annotation',
-							text: 'Created Successfully',
-							type: 'success',
-							timer: 2000
-						});
-					}
-				})
-			});
-	}
-
-})
 
 	$(document).on('click', '.room-files-image', (e) => {
 		e.preventDefault();

@@ -27,17 +27,15 @@
   opacity: 0;
 }
 .video-js .vjs-annotation:hover,.video-js .vjs-annotation:focus,.video-js .vjs-annotation:active{
-  border:3px solid green;
+  border:3px solid red;
 }
 .video-js .vjs-annotation.highlight{
 	background-color: yellow;
   border-color: green;
-  width: 2em;
-  height: 2em;
 }
 .video-js .vjs-annotation.highlight:hover,.video-js .vjs-annotation.highlight:focus{
-	background-color: green;
-	border-color: yellow;
+	background-color: yellow;
+	border-color: green;
 	z-index:100;
 }
 
@@ -1479,15 +1477,15 @@ video::-webkit-media-text-track-display {
 
 .video-js .vjs-annotation-line {
   cursor: pointer;
-  background: rgba(0, 0, 0, 0.5);
+  background: #fff;
   color: white;
   position: absolute;
   width: 0.3em;
   height: 1em;
 }
 .video-js .vjs-annotation-line:hover,.video-js .vjs-annotation-line:focus,.video-js .vjs-annotation-line:active{
- border: 0.1em solid rgba(255,255,255,1)
-}©
+ border: 0.1em solid #fff;
+}
 
 .video-js.vjs-paused.vjs-has-started .vjs-annotation-line,
 .video-js.vjs-user-active.vjs-has-started .vjs-annotation-line{

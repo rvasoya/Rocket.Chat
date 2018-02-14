@@ -1,4 +1,6 @@
 import moment from 'moment'
+import toastr from 'toastr';
+
 import './uiPdf.css'
 let newScript = document.createElement("script");
 newScript.type = "text/javascript";
@@ -107,38 +109,65 @@ Template.renderPdf.onCreated(function(){
 	this.pdf = new ReactiveVar()
 	this.canvas = new ReactiveVar(canvas)
 	this.ctx = new ReactiveVar(canvas.getContext('2d'))
+	this.password = '';
 })
 
-Template.renderPdf.onRendered(function(){
-	console.log('rendering pdf...');
-	let instance = Template.instance()
-	// let pdf  = instance.pdf;
-  let url = instance.data.attachments[0].pdf_url
-  url = fixCordova(url);
-  PDFJS.getDocument({ url: url }).then(function(pdf_doc) {
-    //set totalpage, current page, pdf
+function generatePdf(url, instance){
+	PDFJS.getDocument({ url: url, password: instance.password }).then(function(pdf_doc) {
+		let roomTemplate = Blaze.getView($('.dropzone')[0]).templateInstance()
+		toastr.remove()
+		//set totalpage, current page, pdf
 		instance.pdf.set(pdf_doc)
 		instance.totalPage.set(pdf_doc.numPages)
 		instance.currentPage.set(1)
-    //set annotation and render first page
-    showPage(instance,1);
-    $.magnificPopup.open({
-      items: {
-          src: '#pdfload',
-          type: 'inline'
-      },
-      callbacks:{
-        close: function() {
-          // Will fire when popup is closed
-          roomTemplate = Blaze.getView($('.dropzone')[0]).templateInstance()
-          roomTemplate.pdfTemplate.set()
-          roomTemplate.pdfTemplateData.set();
-        }
-      }
-    });
-  }).catch(function(error) {
-    console.log(error);
-  });
+		//set annotation and render first page
+		showPage(instance,1);
+		$.magnificPopup.open({
+			items: {
+					src: '#pdfload',
+					type: 'inline'
+			},
+			callbacks:{
+				close: function() {
+					// Will fire when popup is closed
+					roomTemplate.pdfTemplate.set()
+					roomTemplate.pdfTemplateData.set();
+				}
+			}
+		});
+	}).catch(function(error) {
+		toastr.remove();
+		let roomTemplate = Blaze.getView($('.dropzone')[0]).templateInstance()
+		if(error.name=="PasswordException"){
+			if(error.code == 1){
+				instance.password = prompt('Enter password to open file.')
+				if(instance.password!=null && instance.password.length>0)
+					generatePdf(url, instance)
+				else{
+					roomTemplate.pdfTemplate.set()
+					roomTemplate.pdfTemplateData.set();
+				}
+			}
+			else{
+				toastr.error('Icorrect Password for given file.')
+				roomTemplate.pdfTemplate.set()
+				roomTemplate.pdfTemplateData.set();
+			}
+		}
+		else{
+			toastr.error(error.message)
+			roomTemplate.pdfTemplate.set()
+			roomTemplate.pdfTemplateData.set();
+		}
+	});
+}
+
+Template.renderPdf.onRendered(function(){
+	let instance = Template.instance()
+  let url = instance.data.attachments[0].pdf_url
+  url = fixCordova(url);
+	toastr.info('rendering pdf...');
+	generatePdf(url, instance);
 });
 
 $('body').on('click','#pdf-canvas',function(e){
