@@ -85,6 +85,7 @@ Template.renderVideo.onRendered(() =>{
 	$('body').on('click','.vjs-annotation-line',function(){
 		//seek to player...
 		videojs.players.videohaha.currentTime($(this).data('sid'))
+		AnnotationHistoryManager.goToAnnotation($(this).data('aid'), 100)
 		let msgEl = $(`.vjs-annotation[data-aid='${$(this).data('aid')}']`)
 		msgEl.addClass('highlight')
 		setTimeout(()=>{
@@ -106,13 +107,15 @@ Template.renderVideo.onRendered(() =>{
     let originalEvent = e;
     let target = e.target;
     let rect = target.getBoundingClientRect();
+ 	 	let x = originalEvent.clientX - rect.left-10;
+ 	 	let y = originalEvent.clientY - rect.top-10;
 		Meteor.call('createVideoAnnotation',{
     	review:text,
 			i : $('#videojsload').attr('video-id'),
 			rid:Session.get('openedRoom'),
       pos:{
-        x : ((originalEvent.clientX - rect.left) / rect.width * 100)-1.3,
-        y : ((originalEvent.clientY - rect.top) / rect.height * 100)-2.5,
+				x : ( x/rect.width * 100),
+				y : ( y/rect.height * 100),
         bar: (player.currentTime()/player.duration())*100,
         time: player.currentTime()
       }

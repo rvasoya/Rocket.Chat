@@ -79,6 +79,13 @@ html.rtl .attachment {
 		line-height: 1rem;
 	}
 
+	& .attachment-video {
+		
+		& .do-annotation{
+			padding:5px;
+		}
+	}
+
 	& .attachment-image {
 		margin-top: 4px;
 
