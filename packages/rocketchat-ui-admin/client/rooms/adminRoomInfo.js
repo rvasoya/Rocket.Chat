@@ -1,5 +1,15 @@
-/*globals AdminChatRoom */
+import { Meteor } from 'meteor/meteor';
+import { ReactiveVar } from 'meteor/reactive-var';
+import { Session } from 'meteor/session';
+import { Template } from 'meteor/templating';
+import { TAPi18n } from 'meteor/tap:i18n';
+import { RocketChat, handleError } from 'meteor/rocketchat:lib';
+import { modal } from 'meteor/rocketchat:ui';
+import { t } from 'meteor/rocketchat:utils';
+import { call } from 'meteor/rocketchat:ui-utils';
+import { AdminChatRoom } from './adminRooms';
 import toastr from 'toastr';
+
 Template.adminRoomInfo.helpers({
 	selectedRoom() {
 		return Session.get('adminRoomsSelected');
@@ -33,6 +43,10 @@ Template.adminRoomInfo.helpers({
 	roomName() {
 		const room = AdminChatRoom.findOne(this.rid, { fields: { name: 1 } });
 		return room && room.name;
+	},
+	roomOwner() {
+		const roomOwner = Template.instance().roomOwner.get();
+		return roomOwner && (roomOwner.name || roomOwner.username);
 	},
 	roomTopic() {
 		const room = AdminChatRoom.findOne(this.rid, { fields: { topic: 1 } });
@@ -69,12 +83,12 @@ Template.adminRoomInfo.helpers({
 		} else {
 			return t('False');
 		}
-	}
+	},
 });
 
 Template.adminRoomInfo.events({
 	'click .delete'() {
-		swal({
+		modal.open({
 			title: t('Are_you_sure'),
 			text: t('Delete_Room_Warning'),
 			type: 'warning',
@@ -83,20 +97,18 @@ Template.adminRoomInfo.events({
 			confirmButtonText: t('Yes_delete_it'),
 			cancelButtonText: t('Cancel'),
 			closeOnConfirm: false,
-			html: false
+			html: false,
 		}, () => {
-			swal.disableButtons();
 			Meteor.call('eraseRoom', this.rid, function(error) {
 				if (error) {
 					handleError(error);
-					swal.enableButtons();
 				} else {
-					swal({
+					modal.open({
 						title: t('Deleted'),
 						text: t('Room_has_been_deleted'),
 						type: 'success',
 						timer: 2000,
-						showConfirmButton: false
+						showConfirmButton: false,
 					});
 				}
 			});
@@ -122,11 +134,12 @@ Template.adminRoomInfo.events({
 	'click .save'(e, t) {
 		e.preventDefault();
 		t.saveSetting(this.rid);
-	}
+	},
 });
 
 Template.adminRoomInfo.onCreated(function() {
 	this.editing = new ReactiveVar;
+	this.roomOwner = new ReactiveVar;
 	this.validateRoomType = () => {
 		const type = this.$('input[name=roomType]:checked').val();
 		if (type !== 'c' && type !== 'p') {
@@ -149,15 +162,13 @@ Template.adminRoomInfo.onCreated(function() {
 		}
 		if (!nameValidation.test(name)) {
 			toastr.error(t('error-invalid-room-name', {
-				room_name: name
+				room_name: name,
 			}));
 			return false;
 		}
 		return true;
 	};
-	this.validateRoomTopic = () => {
-		return true;
-	};
+	this.validateRoomTopic = () => true;
 	this.saveSetting = (rid) => {
 		switch (this.editing.get()) {
 			case 'roomName':
@@ -206,10 +217,10 @@ Template.adminRoomInfo.onCreated(function() {
 							}
 						});
 					};
-					if (!AdminChatRoom.findOne(rid, { fields: { 'default': 1 }})['default']) {
+					if (!AdminChatRoom.findOne(rid, { fields: { default: 1 } }).default) {
 						return saveRoomSettings();
 					}
-					swal({
+					modal.open({
 						title: t('Room_default_change_to_private_will_be_default_no_more'),
 						type: 'warning',
 						showCancelButton: true,
@@ -217,7 +228,7 @@ Template.adminRoomInfo.onCreated(function() {
 						confirmButtonText: t('Yes'),
 						cancelButtonText: t('Cancel'),
 						closeOnConfirm: true,
-						html: false
+						html: false,
 					}, function(confirmed) {
 						return !confirmed || saveRoomSettings();
 					});
@@ -255,4 +266,13 @@ Template.adminRoomInfo.onCreated(function() {
 		}
 		this.editing.set();
 	};
+
+	this.autorun(async() => {
+		this.roomOwner.set(null);
+		for (const { roles, u } of await call('getRoomRoles', Session.get('adminRoomsSelected').rid)) {
+			if (roles.includes('owner')) {
+				this.roomOwner.set(u);
+			}
+		}
+	});
 });
