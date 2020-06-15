@@ -17,8 +17,8 @@ class Advanced extends Plugin {
   check(){
     let disp = this.annotation.filter(n=>{
       let x = (Math.ceil(n.time)) - Math.ceil(this.player.currentTime());
-      if(x <= 5 && x >= -5) {
-        n.opacity = 1-(Math.abs(x)*20)/100
+      if(x == 0) {
+        n.opacity = 1
         return n;
       }
     });
